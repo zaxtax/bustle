@@ -10,5 +10,5 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 - [ ] implement ML add-ons (Algorithm 1 including blue lines)
 - [ ] use the benchmarks mentioned in the paper
   - [ ] Appendix B
-  - [ ] SysGus
+  - [ ] [SysGus](https://github.com/SyGuS-Org/benchmarks)
 - [ ] generate data from synthesis search (last paragraph of Section 3.1)
