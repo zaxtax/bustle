@@ -1,3 +1,5 @@
+## BEGIN DSL ##
+
 Ops = ['add', 'mul', 'neg']
 
 def execute(op, args):
@@ -18,6 +20,8 @@ def arity(op):
     else:
         assert False
 
+## END DSL ##
+
 def executeV(op, args):
     arg_exps = [e for e,x in args]
     arg_vals = [x for e,x in args]
@@ -28,20 +32,16 @@ def executeV(op, args):
     e = (op, arg_exps)
     return (e, x)
 
-def all_args_for(op, E, w):
-    n = arity(op)
-    # TODO: do this generally
+def all_args(n, E, w):
     if n==1:
-        for a1 in E[w]:
-            yield (a1,)
-    elif n==2:
-        for w1 in range(1, w):
-            w2 = w - w1
-            for a1 in E[w1]:
-                for a2 in E[w2]:
-                    yield (a1, a2)
+        r = [[a] for a in E[w]]
     else:
-        assert False, "not implemented"
+        r = [[a] + b for w1 in range(1, w-n+2) for b in all_args(n-1, E, w-w1) for a in E[w1]]
+    return r
+
+def all_args_for(op, E, w):
+    args = list(all_args(arity(op), E, w))
+    return args
 
 def sameV(V1, V2):
     return V1[1] == V2[1]
@@ -95,6 +95,6 @@ def bustle(I, O):
 def test():
     assert 1 == bustle([[1, 2, 3]], [1, 1, 1])
     assert ('input', 0) == bustle([[1, 2, 3]], [1, 2, 3])
-    assert ('add', [('input', 0), 1]) == bustle([[1, 2, 3]], [2, 3, 4])
+    assert ('add', [1, ('input', 0)]) == bustle([[1, 2, 3]], [2, 3, 4])
     assert ('neg', [('input', 0)]) == bustle([[1, 2, 3]], [-1, -2, -3])
     assert ('add', [('input', 0), ('neg', [1])]) == bustle([[1, 2, 3]], [0, 1, 2])
