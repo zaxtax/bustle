@@ -14,7 +14,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
   - [ ] implemement remaining TODOs in operation execution
   - [ ] for initialization, extract string constants from I/O examples
 - [ ] implement ML add-ons (Algorithm 1 including blue lines)
-- [ ] Re-add the initial string constants and see whether the test cases pass with the ML.
+- [ ] re-add the initial string constants and see whether the test cases pass with the ML
 - [ ] write parser for string DSL
 - [ ] use the benchmarks mentioned in the paper
   - [ ] Appendix B
