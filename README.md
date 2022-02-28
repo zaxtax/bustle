@@ -12,8 +12,9 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 - [x] support dynamic errors (such as division by zero) in DSL execution
 - [x] [`stringdsl`](stringdsl.py) implement string manipulation DSL (Figure 1)
   - [ ] implemement remaining TODOs in operation execution
-  - [ ] extract string constants from I/O examples
+  - [ ] for initialization, extract string constants from I/O examples
 - [ ] implement ML add-ons (Algorithm 1 including blue lines)
+- [ ] Re-add the initial string constants and see whether the test cases pass with the ML.
 - [ ] use the benchmarks mentioned in the paper
   - [ ] Appendix B
   - [ ] [SysGus](https://github.com/SyGuS-Org/benchmarks)
