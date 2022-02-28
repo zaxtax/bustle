@@ -3,15 +3,21 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 
 ## TODOs
 
-- [x] implement basic bottom-up synthesis (Algorithm 1 without blue lines)
+- [x] [`bustle`](bustle.py) implement basic bottom-up synthesis (Algorithm 1 without blue lines)
 - [x] test implementation on tiny arithmetic language
 - [x] add types to DSL operations and extend tiny arithmetic language with boolean types and `if` operation
 - [x] allow multiple DSLs
 - [x] support dynamic errors (such as division by zero) in DSL execution
-- [ ] improve the DSL interface so that implementations of DSLs are more concise
-- [ ] implement string manipulation DSL (Figure 1)
+- [x] [`stringdsl`](stringdsl.py) implement string manipulation DSL (Figure 1)
+  - [ ] implemement remaining TODOs in operation execution
+  - [ ] extract string constants from I/O examples
 - [ ] implement ML add-ons (Algorithm 1 including blue lines)
 - [ ] use the benchmarks mentioned in the paper
   - [ ] Appendix B
   - [ ] [SysGus](https://github.com/SyGuS-Org/benchmarks)
 - [ ] generate data from synthesis search (last paragraph of Section 3.1)
+
+### Best practices
+
+- [ ] improve the DSL interface so that implementations of DSLs are more concise?
+- [ ] use a proper Python testing framework?
