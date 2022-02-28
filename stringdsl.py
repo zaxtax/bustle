@@ -2,62 +2,62 @@ from bustle import Dsl, bustle
 
 def StringDsl():
     # note: because we don't support overloading, we name
-    # substituteI instead of overloading substitute
-    # findI instead of overloading find
-    Ops = ['concat', 'left', 'right', 'substr',
-           'replace', 'trim', 'repeat', 'substitute',
-           'substituteI', 'toText', 'lowerCase', 'upperCase',
-           'properCase', 'if',
-           'plus', 'minus',
-           'find', 'findI', 'len',
-           'equals', 'greaterThan', 'greaterThanOrEqualTo'
+    # SubstituteI instead of overloading Substitute, and
+    # FindI instead of overloading Find`
+    Ops = ['Concat', 'Left', 'Right', 'Substr',
+           'Replace', 'Trim', 'Repeat', 'Substitute',
+           'SubstituteI', 'ToText', 'LowerCase', 'UpperCase',
+           'ProperCase', 'If',
+           'Plus', 'Minus',
+           'Find', 'FindI', 'Len',
+           'Equals', 'GreaterThan', 'GreaterThanOrEqualTo'
            ]
     Types = ['str', 'int', 'bool']
 
     def execute(op, x):
-        if op == 'concat':
+        if op == 'Concat':
             return x[0] + x[1]
-        elif op == 'left':
+        elif op == 'Left':
             return x[0][:x[1]]
-        elif op == 'right':
+        elif op == 'Right':
             return x[0][len(x[0])-x[1]:]
-        elif op == 'substr':
+        elif op == 'Substr':
             return x[0][x[1]:x[2]]
-        elif op == 'replace':
+        elif op == 'Replace':
             assert False, "todo"
-        elif op == 'trim':
+        elif op == 'Trim':
             return x[0].strip()
-        elif op == 'repeat':
+        elif op == 'Repeat':
             return x[0]*x[1]
-        elif op == 'substitute':
+        elif op == 'Substitute':
             assert False, "todo"
-        elif op == 'substituteI':
+        elif op == 'SubstituteI':
             assert False, "todo"
-        elif op == 'toText':
+        elif op == 'ToText':
             return str(x[0])
-        elif op == 'lowerCase':
+        elif op == 'LowerCase':
             return x[0].lower()
-        elif op == 'upperCase':
-            return x[0].upper()
-        elif op == 'properCase':
+        elif op == 'UpperCase':
+            return x[0].Upper()
+        elif op == 'ProperCase':
             assert False, "todo"
-        elif op == 'if':
+        elif op == 'If':
             return x[1] if x[0] else x[2]
-        elif op == 'plus':
+        elif op == 'Plus':
             return x[0] + x[1]
-        elif op == 'minus':
+        elif op == 'Minus':
             return x[0] - x[1]
-        elif op == 'find':
+        elif op == 'Find':
             assert False, "todo"
-        elif op == 'findI':
+        elif op == 'FindI':
             assert False, "todo"
-        elif op == 'len':
+        elif op == 'Len':
             return len(x[0])
-        elif op == 'equals':
+        elif op == 'Equals':
             return x[0]==x[1]
-        elif op == 'greaterThan':
+        elif op == 'GreaterThan':
             return x[0]>x[1]
-        elif op == 'greaterThanOrEqualTo':
+        elif op == 'GreaterThanOrEqualTo':
             return x[0]>=x[1]
         else:
             assert False
@@ -67,37 +67,37 @@ def StringDsl():
         i = 'int'
         b = 'bool'
 
-        if op == 'concat':
+        if op == 'Concat':
             return (s, (s, s))
-        elif op in ['left', 'right']:
+        elif op in ['Left', 'Right']:
             return (s, (s, i))
-        elif op == 'substr':
+        elif op == 'Substr':
             return (s, (s, i, i))
-        elif op == 'replace':
+        elif op == 'Replace':
             return (s, (s, i, i, s))
-        elif op == 'trim':
+        elif op == 'Trim':
             return  (s, (s,))
-        elif op == 'repeat':
+        elif op == 'Repeat':
             return (s, (s, i))
-        elif op == 'substitute':
+        elif op == 'Substitute':
             return (s, (s, s, s))
-        elif op == 'substituteI':
+        elif op == 'SubstituteI':
             return (s, (s, s, s, i))
-        elif op == 'toText':
+        elif op == 'ToText':
             return (s, (i,))
-        elif op in ['lowerCase', 'upperCase', 'properCase']:
+        elif op in ['LowerCase', 'UpperCase', 'ProperCase']:
             return (s, (s,))
-        elif op == 'if':
+        elif op == 'If':
             return (s, (b, s, s))
-        elif op in ['plus', 'minus']:
+        elif op in ['Plus', 'Minus']:
             return (i, (i, i))
-        elif op == 'find':
+        elif op == 'Find':
             return (i, (s, s))
-        elif op == 'findI':
+        elif op == 'FindI':
             return (i, (s, s, i))
-        elif op == 'len':
+        elif op == 'Len':
             return (i, (s,))
-        elif op in ['equals', 'greaterThan', 'greaterThanOrEqualTo']:
+        elif op in ['Equals', 'GreaterThan', 'GreaterThanOrEqualTo']:
             return (b, (s, s))
         else:
             assert False, 'op %s is undefined in types' % op
@@ -124,11 +124,11 @@ def test():
     sl = StringDsl()
     str2 = ('str', ('str',))
     str3 = ('str', ('str','str'))
-    assert ('left', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["h", "w"])
-    assert ('right', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["o", "d"])
-    assert ('concat', [('input', 0), ('input', 1)]) == bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["helloyou", "worlddomination"])
-    assert ('concat', [('input', 0), ('concat', [' ', ('input', 1)])]) == bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["hello you", "world domination"])
-    assert ('concat', [('left', [('input', 0), 1]), ('right', [('input', 0), 1])]) == bustle(sl, str2, [["hello", "world"]], ["ho", "wd"])
+    assert ('Left', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["h", "w"])
+    assert ('Right', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["o", "d"])
+    assert ('Concat', [('input', 0), ('input', 1)]) == bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["helloyou", "worlddomination"])
+    assert ('Concat', [('input', 0), ('Concat', [' ', ('input', 1)])]) == bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["hello you", "world domination"])
+    assert ('Concat', [('Left', [('input', 0), 1]), ('Right', [('input', 0), 1])]) == bustle(sl, str2, [["hello", "world"]], ["ho", "wd"])
 
 if __name__ == '__main__':
     print('running tests...')
