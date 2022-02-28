@@ -29,7 +29,7 @@ def ArithDsl():
             assert False
 
     def extractConstants(I, O):
-        cs = [1]
+        cs = [0, 1]
         return [('int', (c,[c for _ in range(len(O))])) for c in cs]
 
     return Dsl(Ops, Types, execute, types, extractConstants)
@@ -120,7 +120,7 @@ def bustle(dsl, typeSig, I, O):
         if sameO(V, O):
             return expression(V)
 
-    for w in range(2, 5):
+    for w in range(2, 10):
         E[w] = empty_e(dsl.Types)
         for op in dsl.Ops:
             t = dsl.returntype(op)
@@ -135,8 +135,10 @@ def bustle(dsl, typeSig, I, O):
 def test():
     al = ArithDsl()
     int2 = ('int', ('int',))
+    int3 = ('int', ('int', 'int'))
     assert 1 == bustle(al, int2, [[1, 2, 3]], [1, 1, 1])
     assert ('input', 0) == bustle(al, int2, [[1, 2, 3]], [1, 2, 3])
     assert ('add', [('input', 0), 1]) == bustle(al, int2, [[1, 2, 3]], [2, 3, 4])
     assert ('neg', [('input', 0)]) == bustle(al, int2, [[1, 2, 3]], [-1, -2, -3])
     assert ('add', [('input', 0), ('neg', [1])]) == bustle(al, int2, [[1, 2, 3]], [0, 1, 2])
+    assert ('if', [('lt', [('input', 0), ('input', 1)]), 1, 0]) == bustle(al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0])
