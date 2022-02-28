@@ -30,7 +30,7 @@ def ArithDsl():
         else:
             assert False
 
-    def extractConstants(I, O):
+    def extractConstants(I, O, It, Ot):
         cs = [0, 1]
         return [('int', (c,[c for _ in range(len(O))])) for c in cs]
 
@@ -102,7 +102,7 @@ def inputVs(I, It):
 
 def initialVs(dsl, I, O, It, Ot):
     E1 = empty_e(dsl.Types)
-    for (t, v) in dsl.extractConstants(I, O) + inputVs(I, It):
+    for (t, v) in dsl.extractConstants(I, O, It, Ot) + inputVs(I, It):
         E1[t] = E1[t] + [v]
     return E1
 
@@ -148,3 +148,8 @@ def test():
     assert ('neg', [('input', 0)]) == bustle(al, int2, [[1, 2, 3]], [-1, -2, -3])
     assert ('add', [('input', 0), ('neg', [1])]) == bustle(al, int2, [[1, 2, 3]], [0, 1, 2])
     assert ('if', [('lt', [('input', 0), ('input', 1)]), 1, 0]) == bustle(al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0])
+
+if __name__ == '__main__':
+    print('running tests...')
+    test()
+    print('done')
