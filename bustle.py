@@ -1,5 +1,5 @@
 def ArithDsl():
-    Ops = ['add', 'mul', 'neg', 'lt', 'if']
+    Ops = ['add', 'mul', 'div', 'neg', 'lt', 'if']
     Types = ['int', 'bool']
 
     def execute(op, args):
@@ -7,6 +7,8 @@ def ArithDsl():
             return args[0] + args[1]
         elif op == 'mul':
             return args[0] * args[1]
+        elif op == 'div':
+            return args[0] / args[1]
         elif op == 'neg':
             return -args[0]
         elif op == 'lt':
@@ -19,7 +21,7 @@ def ArithDsl():
     def types(op):
         if op in ['neg']:
             return ('int', ('int',))
-        elif op in ['add', 'mul']:
+        elif op in ['add', 'mul', 'div']:
             return ('int', ('int', 'int'))
         elif op in ['lt']:
             return ('bool', ('int', 'int'))
@@ -125,7 +127,11 @@ def bustle(dsl, typeSig, I, O):
         for op in dsl.Ops:
             t = dsl.returntype(op)
             for args in all_args_for(dsl, op, E, w-1):
-                V = executeV(dsl, op, args)
+                try:
+                    V = executeV(dsl, op, args)
+                except:
+                    # ignore expressions that cause errors
+                    continue
                 if not containsV(V, E, t):
                     E[w][t] = E[w][t] + [V]
                 if t == Ot and sameO(V, O):
