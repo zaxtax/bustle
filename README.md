@@ -3,6 +3,8 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 
 ## TODOs
 
+### Paper
+
 - [x] [`bustle`](bustle.py) implement basic bottom-up synthesis (Algorithm 1 without blue lines)
 - [x] test implementation on tiny arithmetic language
 - [x] add types to DSL operations and extend tiny arithmetic language with boolean types and `if` operation
