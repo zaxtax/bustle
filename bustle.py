@@ -1,46 +1,52 @@
-## BEGIN DSL ##
+def ArithDsl():
+    Ops = ['add', 'mul', 'neg', 'lt', 'if']
+    Types = ['int', 'bool']
 
-Ops = ['add', 'mul', 'neg', 'lt', 'if']
-Types = ['int', 'bool']
+    def execute(op, args):
+        if op == 'add':
+            return args[0] + args[1]
+        elif op == 'mul':
+            return args[0] * args[1]
+        elif op == 'neg':
+            return -args[0]
+        elif op == 'lt':
+            return args[0] < args[1]
+        elif op == 'if':
+            return args[1] if args[0] else args[2]
+        else:
+            assert False
 
-def execute(op, args):
-    if op == 'add':
-        return args[0] + args[1]
-    elif op == 'mul':
-        return args[0] * args[1]
-    elif op == 'neg':
-        return -args[0]
-    elif op == 'lt':
-        return args[0] < args[1]
-    elif op == 'if':
-        return args[1] if args[0] else args[2]
-    else:
-        assert False
+    def types(op):
+        if op in ['neg']:
+            return ('int', ('int',))
+        elif op in ['add', 'mul']:
+            return ('int', ('int', 'int'))
+        elif op in ['lt']:
+            return ('bool', ('int', 'int'))
+        elif op in ['if']:
+            return ('int', ('bool', 'int', 'int'))
+        else:
+            assert False
 
-def types(op):
-    if op in ['neg']:
-        return ('int', ('int',))
-    elif op in ['add', 'mul']:
-        return ('int', ('int', 'int'))
-    elif op in ['lt']:
-        return ('bool', ('int', 'int'))
-    elif op in ['if']:
-        return ('int', ('bool', 'int', 'int'))
-    else:
-        assert False
+    return Dsl(Ops, Types, execute, types)
 
-## END DSL ##
+class Dsl:
+    def __init__(self, Ops, Types, execute, types):
+        self.Ops = Ops
+        self.Types = Types
+        self.execute = execute
+        self.types = types
 
-def arity(op):
-    return len(argtypes(op))
+    def arity(self, op):
+        return len(self.argtypes(op))
 
-def argtypes(op):
-    _, ts = types(op)
-    return ts
+    def argtypes(self, op):
+        _, ts = self.types(op)
+        return ts
 
-def returntype(op):
-    t, _ = types(op)
-    return t
+    def returntype(self, op):
+        t, _ = self.types(op)
+        return t
 
 def executeV(op, args):
     arg_exps = [e for e,x in args]
@@ -59,8 +65,8 @@ def all_args(n, ts, E, w):
         r = [[a] + b for w1 in range(1, w-n+2) for b in all_args(n-1, ts[1:], E, w-w1) for a in E[w1][ts[0]]]
     return r
 
-def all_args_for(op, E, w):
-    return all_args(arity(op), argtypes(op), E, w)
+def all_args_for(dsl, op, E, w):
+    return all_args(dsl.arity(op), dsl.argtypes(op), E, w)
 
 def sameV(V1, V2):
     return V1[1] == V2[1]
@@ -91,8 +97,8 @@ def empty_e(ts):
 def inputVs(I, It):
     return [(It[i], (('input', i), I[i])) for i in range(len(I))]
 
-def initialVs(I, O, It, Ot):
-    E1 = empty_e(Types)
+def initialVs(dsl, I, O, It, Ot):
+    E1 = empty_e(dsl.Types)
     for (t, v) in extractConstants(I, O) + inputVs(I, It):
         E1[t] = E1[t] + [v]
     return E1
@@ -101,13 +107,12 @@ def initialVs(I, O, It, Ot):
 # Input: Input-output examples (I,O)
 # Output: A program P consistent with the examples (I, O)
 # Auxiliary Data:
-#   supported operations Ops
-#   supported types Types
+#   a DSL with supported operations
 #   type signature typeSig
-def bustle(I, O, typeSig):
+def bustle(dsl, typeSig, I, O):
     Ot, It = typeSig
     E = {}
-    E[1] = initialVs(I, O, It, Ot)
+    E[1] = initialVs(dsl, I, O, It, Ot)
 
     # edge cases (not in paper)
     for V in E[1][Ot]:
@@ -118,7 +123,7 @@ def bustle(I, O, typeSig):
         E[w] = empty_e(Types)
         for op in Ops:
             t = returntype(op)
-            for args in all_args_for(op, E, w-1):
+            for args in all_args_for(dsl, op, E, w-1):
                 V = executeV(op, args)
                 if not containsV(V, E, t):
                     E[w][t] = E[w][t] + [V]
@@ -127,9 +132,10 @@ def bustle(I, O, typeSig):
     return E # for debugging
 
 def test():
+    al = ArithDsl()
     int2 = ('int', ('int',))
-    assert 1 == bustle([[1, 2, 3]], [1, 1, 1], int2)
-    assert ('input', 0) == bustle([[1, 2, 3]], [1, 2, 3], int2)
-    assert ('add', [('input', 0), 1]) == bustle([[1, 2, 3]], [2, 3, 4], int2)
-    assert ('neg', [('input', 0)]) == bustle([[1, 2, 3]], [-1, -2, -3], int2)
-    assert ('add', [('input', 0), ('neg', [1])]) == bustle([[1, 2, 3]], [0, 1, 2], int2)
+    assert 1 == bustle(al, int2, [[1, 2, 3]], [1, 1, 1])
+    assert ('input', 0) == bustle(al, int2, [[1, 2, 3]], [1, 2, 3])
+    assert ('add', [('input', 0), 1]) == bustle(al, int2, [[1, 2, 3]], [2, 3, 4])
+    assert ('neg', [('input', 0)]) == bustle(al, int2, [[1, 2, 3]], [-1, -2, -3])
+    assert ('add', [('input', 0), ('neg', [1])]) == bustle(al, int2, [[1, 2, 3]], [0, 1, 2])
