@@ -120,6 +120,9 @@ def test():
     sl = StringDsl()
     str2 = ('str', ('str',))
     assert ('left', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["h", "w"])
+    assert ('right', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["o", "d"])
+    # this spec seems to hang
+    # bustle(sl, str2, [["hello", "world"]], ["ho", "wd"])
 
 if __name__ == '__main__':
     print('running tests...')
