@@ -5,6 +5,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 
 - [x] implement basic bottom-up synthesis (Algorithm 1 without blue lines)
 - [x] test implementation on tiny arithmetic language
+- [ ] add types to DSL operations and extend tiny arithmetic language with boolean types and `if: bool -> int -> int -> int` operations
 - [ ] allow multiple DSLs
 - [ ] implement string manipulation DSL (Figure 1)
 - [ ] implement ML add-ons (Algorithm 1 including blue lines)
