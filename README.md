@@ -22,5 +22,6 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 
 ### Best practices
 
+- [ ] Build a (DSL-paramterized) program executor for the synthesized expressions.
 - [ ] improve the DSL interface so that implementations of DSLs are more concise?
 - [ ] use a proper Python testing framework?
