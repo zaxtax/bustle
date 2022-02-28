@@ -28,14 +28,19 @@ def ArithDsl():
         else:
             assert False
 
-    return Dsl(Ops, Types, execute, types)
+    def extractConstants(I, O):
+        cs = [1]
+        return [('int', (c,[c for _ in range(len(O))])) for c in cs]
+
+    return Dsl(Ops, Types, execute, types, extractConstants)
 
 class Dsl:
-    def __init__(self, Ops, Types, execute, types):
+    def __init__(self, Ops, Types, execute, types, extractConstants):
         self.Ops = Ops
         self.Types = Types
         self.execute = execute
         self.types = types
+        self.extractConstants = extractConstants
 
     def arity(self, op):
         return len(self.argtypes(op))
@@ -48,12 +53,12 @@ class Dsl:
         t, _ = self.types(op)
         return t
 
-def executeV(op, args):
+def executeV(dsl, op, args):
     arg_exps = [e for e,x in args]
     arg_vals = [x for e,x in args]
     x = []
     for op_args in zip(*arg_vals):
-        a = execute(op, op_args)
+        a = dsl.execute(op, op_args)
         x = x + [a]
     e = (op, arg_exps)
     return (e, x)
@@ -84,10 +89,6 @@ def containsV(V, E, t):
 def expression(X):
     return X[0]
 
-def extractConstants(I, O):
-    cs = [1]
-    return [('int', (c,[c for _ in range(len(O))])) for c in cs]
-
 def empty_e(ts):
     En = {}
     for t in ts:
@@ -99,7 +100,7 @@ def inputVs(I, It):
 
 def initialVs(dsl, I, O, It, Ot):
     E1 = empty_e(dsl.Types)
-    for (t, v) in extractConstants(I, O) + inputVs(I, It):
+    for (t, v) in dsl.extractConstants(I, O) + inputVs(I, It):
         E1[t] = E1[t] + [v]
     return E1
 
@@ -120,11 +121,11 @@ def bustle(dsl, typeSig, I, O):
             return expression(V)
 
     for w in range(2, 5):
-        E[w] = empty_e(Types)
-        for op in Ops:
-            t = returntype(op)
+        E[w] = empty_e(dsl.Types)
+        for op in dsl.Ops:
+            t = dsl.returntype(op)
             for args in all_args_for(dsl, op, E, w-1):
-                V = executeV(op, args)
+                V = executeV(dsl, op, args)
                 if not containsV(V, E, t):
                     E[w][t] = E[w][t] + [V]
                 if t == Ot and sameO(V, O):
