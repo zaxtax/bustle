@@ -119,9 +119,12 @@ def StringDsl():
 def test():
     sl = StringDsl()
     str2 = ('str', ('str',))
+    str3 = ('str', ('str','str'))
     assert ('left', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["h", "w"])
     assert ('right', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["o", "d"])
-    # this spec seems to hang
+    assert ('concat', [('input', 0), ('input', 1)]) == bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["helloyou", "worlddomination"])
+    # these seem to hang!
+    # bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["hello you", "world domination"])
     # bustle(sl, str2, [["hello", "world"]], ["ho", "wd"])
 
 if __name__ == '__main__':
