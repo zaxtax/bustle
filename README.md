@@ -14,7 +14,8 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
   - [ ] implemement remaining TODOs in operation execution
   - [ ] for initialization, extract string constants from I/O examples
 - [ ] implement ML add-ons (Algorithm 1 including blue lines)
-- [ ] Re-add the initial string constants and see whether the test cases pass with the ML.
+- [ ] re-add the initial string constants and see whether the test cases pass with the ML
+- [ ] write parser for string DSL
 - [ ] use the benchmarks mentioned in the paper
   - [ ] Appendix B
   - [ ] [SysGus](https://github.com/SyGuS-Org/benchmarks)
@@ -22,6 +23,6 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 
 ### Best practices
 
-- [ ] Build a (DSL-paramterized) program executor for the synthesized expressions.
+- [ ] build a (DSL-paramterized) program executor for the synthesized expressions
 - [ ] improve the DSL interface so that implementations of DSLs are more concise?
 - [ ] use a proper Python testing framework?
