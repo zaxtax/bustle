@@ -13,6 +13,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 - [x] [`stringdsl`](stringdsl.py) implement string manipulation DSL (Figure 1)
   - [ ] implemement remaining TODOs in operation execution
   - [ ] for initialization, extract string constants from I/O examples
+  - [ ] rectify the DSL to match the benchmarks
 - [ ] implement ML add-ons (Algorithm 1 including blue lines)
 - [ ] re-add the initial string constants and see whether the test cases pass with the ML
 - [ ] write parser for string DSL
