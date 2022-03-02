@@ -112,7 +112,9 @@ def initialVs(dsl, I, O, It, Ot):
 # Auxiliary Data:
 #   a DSL with supported operations
 #   type signature typeSig
-def bustle(dsl, typeSig, I, O):
+#   property list of lists llProps
+#   model M
+def bustle(dsl, typeSig, I, O, llProps = None, M = None):
     Ot, It = typeSig
     E = {}
     E[1] = initialVs(dsl, I, O, It, Ot)
@@ -121,6 +123,8 @@ def bustle(dsl, typeSig, I, O):
     for V in E[1][Ot]:
         if sameO(V, O):
             return expression(V)
+
+    s_io = propertySignature(I, O, llProps)
 
     for w in range(2, 10):
         E[w] = empty_e(dsl.Types)
@@ -133,10 +137,19 @@ def bustle(dsl, typeSig, I, O):
                     # ignore expressions that cause errors
                     continue
                 if not containsV(V, E, t):
-                    E[w][t] = E[w][t] + [V]
+                    wp = w
+                    s_vo = propertySignature(V, O, llProps)
+                    wp = reweightWithModel(M, s_io, s_vo, w)
+                    E[wp][t] = E[wp][t] + [V]
                 if t == Ot and sameO(V, O):
                     return expression(V)
     return E # for debugging
+
+def propertySignature(I, O, llProps):
+    return None # TODO
+
+def reweightWithModel(M, s_io, s_vo, w):
+    return w # TODO
 
 def test():
     al = ArithDsl()

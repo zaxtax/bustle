@@ -16,6 +16,10 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
   - [ ] rectify the DSL to match the benchmarks
   - [x] convert property lists from Appendix C
 - [ ] implement ML add-ons (Algorithm 1 including blue lines) (Z)
+  - [x] scaffold the blue lines
+  - [ ] implement `propertySignature`
+  - [ ] implement `reweightWithModel`
+  - [ ] learn model
 - [ ] re-add the initial string constants and see whether the test cases pass with the ML
 - [ ] write parser for string DSL
 - [ ] use the benchmarks mentioned in the paper
