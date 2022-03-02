@@ -145,9 +145,10 @@ def bustle(dsl, typeSig, I, O, llProps = None, M = None):
                     return expression(V)
     return E # for debugging
 
-# to simplify implementation of `propertySignature`
+# To simplify implementation of `propertySignature`
 # make representation of `I`, `O`, and `V` more uniform
-# or else implement `propertySignature` twice, once for each call
+# or else implement `propertySignature` twice, once for each call.
+# It's also not clear what are the shapes of `s_io` and `s_vo`.
 def propertySignature(I, O, llProps):
     return None # TODO
 
