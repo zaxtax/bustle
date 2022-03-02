@@ -124,7 +124,7 @@ def bustle(dsl, typeSig, I, O, llProps = None, M = None):
         if sameO(V, O):
             return expression(V)
 
-    s_io = propertySignature(I, O, llProps)
+    s_io = propertySignatureIO(I, O, llProps)
 
     for w in range(2, 10):
         E[w] = empty_e(dsl.Types)
@@ -138,18 +138,17 @@ def bustle(dsl, typeSig, I, O, llProps = None, M = None):
                     continue
                 if not containsV(V, E, t):
                     wp = w
-                    s_vo = propertySignature(V, O, llProps)
+                    s_vo = propertySignatureVO(V, O, llProps)
                     wp = reweightWithModel(M, s_io, s_vo, w)
                     E[wp][t] = E[wp][t] + [V]
                 if t == Ot and sameO(V, O):
                     return expression(V)
     return E # for debugging
 
-# To simplify implementation of `propertySignature`
-# make representation of `I`, `O`, and `V` more uniform
-# or else implement `propertySignature` twice, once for each call.
-# It's also not clear what are the shapes of `s_io` and `s_vo`.
-def propertySignature(I, O, llProps):
+def propertySignatureIO(I, O, llProps):
+    return None # TODO
+
+def propertySignatureVO(V, O, llProps):
     return None # TODO
 
 def reweightWithModel(M, s_io, s_vo, w):
