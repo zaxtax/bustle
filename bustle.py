@@ -112,7 +112,7 @@ def initialVs(dsl, I, O, It, Ot):
 # Auxiliary Data:
 #   a DSL with supported operations
 #   type signature typeSig
-#   property list of lists llProps
+#   property list of typed lists of functions llProps
 #   model M
 def bustle(dsl, typeSig, I, O, llProps = None, M = None):
     Ot, It = typeSig
@@ -161,6 +161,13 @@ def test():
     assert ('neg', [('input', 0)]) == bustle(al, int2, [[1, 2, 3]], [-1, -2, -3])
     assert ('add', [('input', 0), ('neg', [1])]) == bustle(al, int2, [[1, 2, 3]], [0, 1, 2])
     assert ('if', [('lt', [('input', 0), ('input', 1)]), 1, 0]) == bustle(al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0])
+
+    llProps = [
+        (('int',), [lambda inp: inp % 2 == 0]),
+        (('bool',), [lambda b: b]),
+        (('int', 'int'), [lambda inp, oup: inp - oup > 0, lambda inp, oup: abs(inp - oup) <= 1]),
+        (('bool', 'int'), [lambda b, oup: (oup % 2 == 0) == b])
+    ]
 
 if __name__ == '__main__':
     print('running tests...')
