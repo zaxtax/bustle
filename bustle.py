@@ -1,4 +1,5 @@
 import torch
+from stringprops import props_str, props_int, props_str2str, props_int2str
 
 
 def ArithDsl():
@@ -206,9 +207,10 @@ def reweightWithModel(M, s_io, s_vo, w):
 
 def test():
     al = ArithDsl()
+    llProps = [props_str, props_int, props_str2str, props_int2str]
     int2 = ("int", ("int",))
     int3 = ("int", ("int", "int"))
-    assert 1 == bustle(al, int2, [[1, 2, 3]], [1, 1, 1])
+    assert 1 == bustle(al, int2, [[1, 2, 3]], [1, 1, 1], llProps)
     assert ("input", 0) == bustle(al, int2, [[1, 2, 3]], [1, 2, 3])
     assert ("add", [("input", 0), 1]) == bustle(al, int2, [[1, 2, 3]], [2, 3, 4])
     assert ("neg", [("input", 0)]) == bustle(al, int2, [[1, 2, 3]], [-1, -2, -3])
