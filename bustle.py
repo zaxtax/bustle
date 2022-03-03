@@ -173,9 +173,9 @@ def bustle(dsl, typeSig, I, O, llProps=None, M=None):
 
 
 def evaluateProperty(I, prop):
-    all_false = 0
+    all_false = -1
     all_true = 1
-    mixed = 2
+    mixed = 0
 
     tests = torch.tensor([prop(*i) for i in I])
     if torch.all(tests):
