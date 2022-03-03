@@ -105,6 +105,10 @@ def containsV(V, E, t):
     return False
 
 
+def value(V):
+    return V[1]
+
+
 def expression(X):
     return X[0]
 
@@ -160,7 +164,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, M=None):
                     continue
                 if not containsV(V, E, t):
                     wp = w
-                    s_vo = propertySignature(V, Vt, O, Ot, llProps)
+                    s_vo = propertySignature([value(V)], Vt, O, Ot, llProps)
                     wp = reweightWithModel(M, s_io, s_vo, w)
                     E[wp][t] = E[wp][t] + [V]
                 if t == Ot and sameO(V, O):
@@ -168,11 +172,12 @@ def bustle(dsl, typeSig, I, O, llProps=None, M=None):
     return E  # for debugging
 
 
-def evaluateProperty(I, props):
+def evaluateProperty(I, prop):
     all_false = 0
     all_true = 1
     mixed = 2
-    tests = torch.tensor([p(*I) for p in props])
+
+    tests = torch.tensor([prop(*i) for i in I])
     if torch.all(tests):
         return all_true
     elif torch.all(tests == False):
@@ -186,18 +191,26 @@ def propertySignature(I, It, O, Ot, llProps):
     if llProps is None:
         return torch.tensor(propSig)
 
+    # FIXME: Only handle single input for now
+    I = I[0]
+
     for typs, props in llProps:
         if len(typs) == 1:
             if typs[0] == It:
-                sig = evaluateProperty(I, props)
-                propSig.append(sig)
+                _I = [[i] for i in I]
+                for p in props:
+                    sig = evaluateProperty(_I, p)
+                    propSig.append(sig)
             if typs[0] == Ot:
-                sig = evaluateProperty(O, props)
-                propSig.append(sig)
+                _O = [[o] for o in O]
+                for p in props:
+                    sig = evaluateProperty(_O, p)
+                    propSig.append(sig)
         elif len(typs) == 2:
             if typs[0] == It and typs[1] == Ot:
-                sig = evaluateProperty(zip(I, O), props)
-                propSig.append(sig)
+                for p in props:
+                    sig = evaluateProperty(zip(I, O), p)
+                    propSig.append(sig)
     return torch.tensor(propSig)
 
 
@@ -208,19 +221,6 @@ def reweightWithModel(M, s_io, s_vo, w):
 def test():
     al = ArithDsl()
     llProps = [props_str, props_int, props_str2str, props_int2str]
-    int2 = ("int", ("int",))
-    int3 = ("int", ("int", "int"))
-    assert 1 == bustle(al, int2, [[1, 2, 3]], [1, 1, 1], llProps)
-    assert ("input", 0) == bustle(al, int2, [[1, 2, 3]], [1, 2, 3])
-    assert ("add", [("input", 0), 1]) == bustle(al, int2, [[1, 2, 3]], [2, 3, 4])
-    assert ("neg", [("input", 0)]) == bustle(al, int2, [[1, 2, 3]], [-1, -2, -3])
-    assert ("add", [("input", 0), ("neg", [1])]) == bustle(
-        al, int2, [[1, 2, 3]], [0, 1, 2]
-    )
-    assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == bustle(
-        al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0]
-    )
-
     llProps = [
         (("int",), [lambda inp: inp % 2 == 0]),
         (("bool",), [lambda b: b]),
@@ -230,6 +230,23 @@ def test():
         ),
         (("bool", "int"), [lambda b, oup: (oup % 2 == 0) == b]),
     ]
+
+    int2 = ("int", ("int",))
+    int3 = ("int", ("int", "int"))
+    assert 1 == bustle(al, int2, [[1, 2, 3]], [1, 1, 1], llProps)
+    assert ("input", 0) == bustle(al, int2, [[1, 2, 3]], [1, 2, 3], llProps)
+    assert ("add", [("input", 0), 1]) == bustle(
+        al, int2, [[1, 2, 3]], [2, 3, 4], llProps
+    )
+    assert ("neg", [("input", 0)]) == bustle(
+        al, int2, [[1, 2, 3]], [-1, -2, -3], llProps
+    )
+    assert ("add", [("input", 0), ("neg", [1])]) == bustle(
+        al, int2, [[1, 2, 3]], [0, 1, 2], llProps
+    )
+    assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == bustle(
+        al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0]
+    )
 
 
 if __name__ == "__main__":
