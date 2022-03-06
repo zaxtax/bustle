@@ -22,7 +22,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
   - [ ] implement `reweightWithModel`
   - [ ] learn model
 - [ ] re-add the initial string constants and see whether the test cases pass with the ML
-- [ ] write parser for string DSL
+- [ ] write parser for string DSL, or rather implement a shallow embedding
 - [ ] use the benchmarks mentioned in the paper
   - [ ] Appendix B
   - [ ] [SysGus](https://github.com/SyGuS-Org/benchmarks)
