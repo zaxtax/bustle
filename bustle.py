@@ -75,13 +75,13 @@ def executeV(dsl, op, args):
 
 def all_args(n, ts, E, w):
     if n == 1:
-        r = [[a] for a in E[w][ts[0]]]
+        r = [[a] for a in getE(E, w, ts[0])]
     else:
         r = [
             [a] + b
             for w1 in range(1, w - n + 2)
             for b in all_args(n - 1, ts[1:], E, w - w1)
-            for a in E[w1][ts[0]]
+            for a in getE(E, w1, ts[0])
         ]
     return r
 
@@ -120,6 +120,11 @@ def empty_e(ts):
         En[t] = []
     return En
 
+
+def getE(E, w, t):
+    return E.get(w, {}).get(t, [])
+
+
 def set_empty_e_if_none(dsl, E, w):
     if w not in E:
         E[w] = empty_e(dsl.Types)
@@ -129,11 +134,7 @@ def inputVs(I, It):
 
 
 def initialVs(dsl, I, O, It, Ot):
-    E1 = empty_e(dsl.Types)
-    for (t, v) in dsl.extractConstants(I, O, It, Ot) + inputVs(I, It):
-        E1[t] = E1[t] + [v]
-    return E1
-
+    return dsl.extractConstants(I, O, It, Ot) + inputVs(I, It)
 
 # The Bustle Synthesis Algorithm (without ML for now)
 # Input: Input-output examples (I,O)
@@ -145,34 +146,36 @@ def initialVs(dsl, I, O, It, Ot):
 #   models Ms, a dictionary keyed by types of (input, output, intermediary)
 def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
     Ot, It = typeSig
-    E = {}
-    E[1] = initialVs(dsl, I, O, It, Ot)
-
-    # edge cases (not in paper)
-    for V in E[1][Ot]:
-        if sameO(V, O):
-            return expression(V)
-
     s_io = propertySignature(I, It, O, Ot, llProps)
 
-    for w in range(2, 20):
+    E = {}
+    for (Vt, V) in initialVs(dsl, I, O, It, Ot):
+        w = 1
+        if Vt == Ot and sameO(V, O):
+            return expression(V)
+        if not containsV(V, E, Vt):
+            wp = w
+            s_vo = propertySignature([value(V)], [Vt], O, Ot, llProps)
+            wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
+            addE(dsl, E, wp, Vt, V)
+
+    for w in range(2, 100):
         set_empty_e_if_none(dsl, E, w)
         for op in dsl.Ops:
-            t = dsl.returntype(op)
+            Vt = dsl.returntype(op)
             for args in all_args_for(dsl, op, E, w - 1):
                 try:
                     V = executeV(dsl, op, args)
-                    Vt = dsl.types(op)[0]
                 except:
                     # ignore expressions that cause errors
                     continue
-                if t == Ot and sameO(V, O):
+                if Vt == Ot and sameO(V, O):
                     return expression(V)
-                if not containsV(V, E, t):
+                if not containsV(V, E, Vt):
                     wp = w
                     s_vo = propertySignature([value(V)], [Vt], O, Ot, llProps)
                     wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
-                    addE(dsl, E, wp, t, V)
+                    addE(dsl, E, wp, Vt, V)
     return E  # for debugging
 
 def addE(dsl, E, w, t, V):
