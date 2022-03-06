@@ -297,11 +297,9 @@ def test():
     assert ("add", [("input", 0), ("neg", [1])]) == bustle(
         al, int2, [[1, 2, 3]], [0, 1, 2], llProps, Ms
     )
-
-    # TODO: has multiple inputs
-    # assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == bustle(
-    #     al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0]
-    # )
+    assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == bustle(
+        al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0]
+    )
 
 if __name__ == "__main__":
     print("running tests...")
