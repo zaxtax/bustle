@@ -120,6 +120,9 @@ def empty_e(ts):
         En[t] = []
     return En
 
+def set_empty_e_if_none(dsl, E, w):
+    if w not in E:
+        E[w] = empty_e(dsl.Types)
 
 def inputVs(I, It):
     return [(It[i], (("input", i), I[i])) for i in range(len(I))]
@@ -153,7 +156,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
     s_io = propertySignature(I, It, O, Ot, llProps)
 
     for w in range(2, 20):
-        E[w] = empty_e(dsl.Types)
+        set_empty_e_if_none(dsl, E, w)
         for op in dsl.Ops:
             t = dsl.returntype(op)
             for args in all_args_for(dsl, op, E, w - 1):
@@ -173,8 +176,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
     return E  # for debugging
 
 def addE(dsl, E, w, t, V):
-    if w not in E:
-        E[w] = empty_e(dsl.Types)
+    set_empty_e_if_none(dsl, E, w)
     E[w][t] = E[w][t] + [V]
 
 
@@ -292,11 +294,9 @@ def test():
     assert ("neg", [("input", 0)]) == bustle(
         al, int2, [[1, 2, 3]], [-1, -2, -3], llProps, Ms
     )
-
-    # TODO: fails since reweighting added
-    # assert ("add", [("input", 0), ("neg", [1])]) == bustle(
-    #     al, int2, [[1, 2, 3]], [0, 1, 2], llProps, Ms
-    # )
+    assert ("add", [("input", 0), ("neg", [1])]) == bustle(
+        al, int2, [[1, 2, 3]], [0, 1, 2], llProps, Ms
+    )
 
     # TODO: has multiple inputs
     # assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == bustle(
