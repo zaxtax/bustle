@@ -64,3 +64,5 @@ lambda integer, outputStr: integer > len(outputStr)          , # is greater than
 lambda integer, outputStr: abs(integer - len(outputStr)) <= 1, # is very close to output length?
 lambda integer, outputStr: abs(integer - len(outputStr)) <= 3, # is close to output length?
 ])
+
+llProps = [props_str, props_int, props_str2str, props_int2str]

@@ -1,4 +1,4 @@
-from bustle import Dsl, bustle
+from bustle import Dsl, bustle, propertySignatureSize
 
 def StringDsl():
     # note: because we don't support overloading, we name
@@ -121,13 +121,18 @@ def StringDsl():
     return Dsl(Ops, Types, execute, types, extractConstants)
 
 def test():
+    from stringprops import llProps
+    from model import Rater
     sl = StringDsl()
+    Ms = {(('str',), 'str', 'str'): Rater(
+        2*propertySignatureSize(('str',), 'str', llProps)
+    )}
     str2 = ('str', ('str',))
     str3 = ('str', ('str','str'))
-    assert ('Left', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["h", "w"])
-    assert ('Right', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["o", "d"])
+    assert ('Left', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["h", "w"], llProps, Ms)
+    assert ('Right', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["o", "d"], llProps, Ms)
     assert ('Concat', [('input', 0), ('input', 1)]) == bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["helloyou", "worlddomination"])
-    assert ('Concat', [('input', 0), ('Concat', [' ', ('input', 1)])]) == bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["hello you", "world domination"])
+    assert ('Concat', [('input', 0), ('Concat', [' ', ('input', 1)])]) == bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["hello you", "world domination"], llProps, Ms)
     assert ('Concat', [('Left', [('input', 0), 1]), ('Right', [('input', 0), 1])]) == bustle(sl, str2, [["hello", "world"]], ["ho", "wd"])
 
 if __name__ == '__main__':
