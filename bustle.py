@@ -263,7 +263,7 @@ def reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w):
         # else:
         #     assert False, "missing model for "+str(key)
 
-    return wp  # TODO
+    return wp
 
 
 def test():
