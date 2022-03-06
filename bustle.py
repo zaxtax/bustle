@@ -151,13 +151,9 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
     E = {}
     for (Vt, V) in initialVs(dsl, I, O, It, Ot):
         w = 1
-        if Vt == Ot and sameO(V, O):
-            return expression(V)
-        if not containsV(V, E, Vt):
-            wp = w
-            s_vo = propertySignature([value(V)], [Vt], O, Ot, llProps)
-            wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
-            addE(dsl, E, wp, Vt, V)
+        r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
+        if r is not None:
+            return r
 
     for w in range(2, 100):
         set_empty_e_if_none(dsl, E, w)
@@ -169,14 +165,21 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
                 except:
                     # ignore expressions that cause errors
                     continue
-                if Vt == Ot and sameO(V, O):
-                    return expression(V)
-                if not containsV(V, E, Vt):
-                    wp = w
-                    s_vo = propertySignature([value(V)], [Vt], O, Ot, llProps)
-                    wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
-                    addE(dsl, E, wp, Vt, V)
+                r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
+                if r is not None:
+                    return r
+
     return E  # for debugging
+
+def ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl):
+    if Vt == Ot and sameO(V, O):
+        return expression(V)
+    if not containsV(V, E, Vt):
+        wp = w
+        s_vo = propertySignature([value(V)], [Vt], O, Ot, llProps)
+        wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
+        addE(dsl, E, wp, Vt, V)
+    return None
 
 def addE(dsl, E, w, t, V):
     set_empty_e_if_none(dsl, E, w)
