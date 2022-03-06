@@ -15,7 +15,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
   - [ ] for initialization, extract string constants from I/O examples
   - [ ] rectify the DSL to match the benchmarks
   - [x] convert property lists from Appendix C
-- [ ] implement ML add-ons (Algorithm 1 including blue lines) (Z)
+- [ ] implement ML add-ons (Algorithm 1 including blue lines)
   - [x] scaffold the blue lines
   - [x] settle on shapes for `s_io` and `s_vo`, the interfaces between `propertySignature` and `reweightWithModel`
   - [x] implement `propertySignature`
