@@ -1,6 +1,7 @@
 import torch
 from stringprops import props_str, props_int, props_str2str, props_int2str
 
+from model import Rater
 
 def ArithDsl():
     Ops = ["add", "mul", "div", "neg", "lt", "if"]
@@ -138,8 +139,8 @@ def initialVs(dsl, I, O, It, Ot):
 #   a DSL with supported operations
 #   type signature typeSig
 #   property list of typed lists of functions llProps
-#   model M
-def bustle(dsl, typeSig, I, O, llProps=None, M=None):
+#   models Ms, a dictionary keyed by types of (input, output, intermediary)
+def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
     Ot, It = typeSig
     E = {}
     E[1] = initialVs(dsl, I, O, It, Ot)
@@ -165,7 +166,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, M=None):
                 if not containsV(V, E, t):
                     wp = w
                     s_vo = propertySignature([value(V)], Vt, O, Ot, llProps)
-                    wp = reweightWithModel(M, s_io, s_vo, w)
+                    wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
                     E[wp][t] = E[wp][t] + [V]
                 if t == Ot and sameO(V, O):
                     return expression(V)
@@ -185,15 +186,29 @@ def evaluateProperty(I, prop):
     else:
         return mixed
 
+def propertySignatureSize(It, Ot, llProps):
+    size = 0
+    # FIXME: Only handle single input for now
+    It = It[0]
+    for typs, props in llProps:
+        if len(typs) == 1:
+            if typs[0] == It:
+                size += len(props)
+            if typs[0] == Ot:
+                size += len(props)
+        elif len(typs) == 2:
+            if typs[0] == It and typs[1] == Ot:
+                size += len(props)
+    return size
 
 def propertySignature(I, It, O, Ot, llProps):
     propSig = []
     if llProps is None:
-        return torch.tensor(propSig)
+        return None
 
     # FIXME: Only handle single input for now
     I = I[0]
-
+    It = It[0]
     for typs, props in llProps:
         if len(typs) == 1:
             if typs[0] == It:
@@ -214,8 +229,20 @@ def propertySignature(I, It, O, Ot, llProps):
     return torch.tensor(propSig)
 
 
-def reweightWithModel(M, s_io, s_vo, w):
-    return w  # TODO
+def reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w):
+    if Ms is None or s_io is None or s_vo is None:
+        return w
+
+    wp = w
+    if Ms:
+        key = (It, Ot, Vt)
+        M = Ms.get(key)
+        if M:
+            wp = w
+        # else:
+        #     assert False, "missing model for "+str(key)
+
+    return wp  # TODO
 
 
 def test():
@@ -230,19 +257,20 @@ def test():
         ),
         (("bool", "int"), [lambda b, oup: (oup % 2 == 0) == b]),
     ]
+    Ms = {(('int',), 'int', 'int'): Rater(2*propertySignatureSize(('int',), 'int', llProps))}
 
     int2 = ("int", ("int",))
     int3 = ("int", ("int", "int"))
-    assert 1 == bustle(al, int2, [[1, 2, 3]], [1, 1, 1], llProps)
-    assert ("input", 0) == bustle(al, int2, [[1, 2, 3]], [1, 2, 3], llProps)
+    assert 1 == bustle(al, int2, [[1, 2, 3]], [1, 1, 1], llProps, Ms)
+    assert ("input", 0) == bustle(al, int2, [[1, 2, 3]], [1, 2, 3], llProps, Ms)
     assert ("add", [("input", 0), 1]) == bustle(
-        al, int2, [[1, 2, 3]], [2, 3, 4], llProps
+        al, int2, [[1, 2, 3]], [2, 3, 4], llProps, Ms
     )
     assert ("neg", [("input", 0)]) == bustle(
-        al, int2, [[1, 2, 3]], [-1, -2, -3], llProps
+        al, int2, [[1, 2, 3]], [-1, -2, -3], llProps, Ms
     )
     assert ("add", [("input", 0), ("neg", [1])]) == bustle(
-        al, int2, [[1, 2, 3]], [0, 1, 2], llProps
+        al, int2, [[1, 2, 3]], [0, 1, 2], llProps, Ms
     )
     assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == bustle(
         al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0]
