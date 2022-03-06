@@ -152,7 +152,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
 
     s_io = propertySignature(I, It, O, Ot, llProps)
 
-    for w in range(2, 10):
+    for w in range(2, 20):
         E[w] = empty_e(dsl.Types)
         for op in dsl.Ops:
             t = dsl.returntype(op)
