@@ -166,13 +166,13 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
                 except:
                     # ignore expressions that cause errors
                     continue
+                if t == Ot and sameO(V, O):
+                    return expression(V)
                 if not containsV(V, E, t):
                     wp = w
                     s_vo = propertySignature([value(V)], [Vt], O, Ot, llProps)
                     wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
                     addE(dsl, E, wp, t, V)
-                if t == Ot and sameO(V, O):
-                    return expression(V)
     return E  # for debugging
 
 def addE(dsl, E, w, t, V):
