@@ -167,10 +167,15 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
                     wp = w
                     s_vo = propertySignature([value(V)], [Vt], O, Ot, llProps)
                     wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
-                    E[wp][t] = E[wp][t] + [V]
+                    addE(dsl, E, wp, t, V)
                 if t == Ot and sameO(V, O):
                     return expression(V)
     return E  # for debugging
+
+def addE(dsl, E, w, t, V):
+    if w not in E:
+        E[w] = empty_e(dsl.Types)
+    E[w][t] = E[w][t] + [V]
 
 
 def evaluateProperty(I, prop):
@@ -227,7 +232,7 @@ def propertySignature(I, It, O, Ot, llProps):
                 for p in props:
                     sig = evaluateProperty(zip(I, O), p)
                     propSig.append(sig)
-    return torch.tensor(propSig)
+    return torch.tensor(propSig).float()
 
 def discrete_prediction(w, p):
     if p < 0.1:
@@ -252,10 +257,8 @@ def reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w):
     if Ms:
         key = (It, Ot, Vt)
         M = Ms.get(key)
-        if M:
+        if M is not None:
             c = torch.cat([s_io, s_vo])
-            print('M.input_dim', M.input_dim)
-            print('c.shape', c.shape)
             wp = discrete_prediction(w, M(c))
         # else:
         #     assert False, "missing model for "+str(key)
