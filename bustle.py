@@ -165,7 +165,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
                     continue
                 if not containsV(V, E, t):
                     wp = w
-                    s_vo = propertySignature([value(V)], Vt, O, Ot, llProps)
+                    s_vo = propertySignature([value(V)], [Vt], O, Ot, llProps)
                     wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
                     E[wp][t] = E[wp][t] + [V]
                 if t == Ot and sameO(V, O):
@@ -209,6 +209,7 @@ def propertySignature(I, It, O, Ot, llProps):
     # FIXME: Only handle single input for now
     I = I[0]
     It = It[0]
+
     for typs, props in llProps:
         if len(typs) == 1:
             if typs[0] == It:
@@ -228,17 +229,34 @@ def propertySignature(I, It, O, Ot, llProps):
                     propSig.append(sig)
     return torch.tensor(propSig)
 
+def discrete_prediction(w, p):
+    if p < 0.1:
+        d = 0
+    elif p < 0.2:
+        d = 1
+    elif p < 0.3:
+        d = 2
+    elif p < 0.4:
+        d = 3
+    elif p < 0.6:
+        d = 4
+    else:
+        d = 5
+    return w + 5 - d
 
 def reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w):
     if Ms is None or s_io is None or s_vo is None:
-        return w
+        return w + 5
 
     wp = w
     if Ms:
         key = (It, Ot, Vt)
         M = Ms.get(key)
         if M:
-            wp = w
+            c = torch.cat([s_io, s_vo])
+            print('M.input_dim', M.input_dim)
+            print('c.shape', c.shape)
+            wp = discrete_prediction(w, M(c))
         # else:
         #     assert False, "missing model for "+str(key)
 
@@ -257,7 +275,9 @@ def test():
         ),
         (("bool", "int"), [lambda b, oup: (oup % 2 == 0) == b]),
     ]
-    Ms = {(('int',), 'int', 'int'): Rater(2*propertySignatureSize(('int',), 'int', llProps))}
+    Ms = {(('int',), 'int', 'int'): Rater(
+        2*propertySignatureSize(('int',), 'int', llProps)
+    )}
 
     int2 = ("int", ("int",))
     int3 = ("int", ("int", "int"))
