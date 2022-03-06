@@ -21,7 +21,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
   - [x] implement `propertySignature`
   - [ ] support multiple inputs in `propertySignature`
   - [x] implement `reweightWithModel`
-  - [ ] consider reweighting for the initial values
+  - [x] consider reweighting for the initial values
   - [ ] learn model
 - [ ] record some metrics (e.g. the number of subexpressions evaluated) during synthesis to compare approaches
 - [ ] re-add the initial string constants and see whether the test cases pass with the ML
