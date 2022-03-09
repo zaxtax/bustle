@@ -6,8 +6,8 @@ def tokens(inp):
     return [x[1] for x in ts if x[1]!='']
     
 def parset(dsl, ts):
-    if dsl.is_op(ts[0]):
-        op = dsl.to_op(ts[0])
+    if dsl.isOp(ts[0]):
+        op = dsl.toOp(ts[0])
         ts = ts[1:]
         assert ts[0] == '('
         ts = ts[1:]
@@ -52,9 +52,14 @@ def printer(dsl, x):
         return str(x)
 
 def test():
-    from bustle import ArithDsl
+    from arithdsl import ArithDsl
     al = ArithDsl()
     assert ("add", [("input", 0), 1]) == parse(al, "add(x0, 1)")
     assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == parse(al, "if(lt(x0, x1), 1, 0)")
     assert "add(x0, 1)" == printer(al, ("add", [("input", 0), 1]))
     assert "if(lt(x0, x1), 1, 0)" == printer(al, ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]))
+
+if __name__ == "__main__":
+    print("running tests...")
+    test()
+    print("done")
