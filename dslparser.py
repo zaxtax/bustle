@@ -42,8 +42,19 @@ def parse(dsl, inp):
     assert ts == []
     return exp
 
+def printer(dsl, x):
+    if type(x) is tuple or type(x) is list:
+        if x[0] == 'input':
+            return 'x'+str(x[1])
+        else:
+            return x[0]+"("+", ".join([printer(dsl, arg) for arg in x[1]])+")"
+    else:
+        return str(x)
+
 def test():
     from bustle import ArithDsl
     al = ArithDsl()
     assert ("add", [("input", 0), 1]) == parse(al, "add(x0, 1)")
     assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == parse(al, "if(lt(x0, x1), 1, 0)")
+    assert "add(x0, 1)" == printer(al, ("add", [("input", 0), 1]))
+    assert "if(lt(x0, x1), 1, 0)" == printer(al, ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]))

@@ -26,7 +26,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 - [ ] record some metrics (e.g. the number of subexpressions evaluated) during synthesis to compare approaches
 - [ ] re-add the initial string constants and see whether the test cases pass with the ML
 - [x] write parser for string DSL
-- [ ] write a pretty printer
+- [x] write a pretty printer
 - [ ] use the benchmarks mentioned in the paper
   - [ ] Appendix B
   - [ ] [SysGus](https://github.com/SyGuS-Org/benchmarks)
