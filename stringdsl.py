@@ -1,4 +1,4 @@
-from bustle import Dsl, bustle, propertySignatureSize
+from dsl import Dsl
 
 def StringDsl():
     # note: because we don't support overloading, we name
@@ -121,6 +121,7 @@ def StringDsl():
     return Dsl(Ops, Types, execute, types, extractConstants)
 
 def test():
+    from bustle import bustle, propertySignatureSize
     from stringprops import llProps
     from model import Rater
     sl = StringDsl()

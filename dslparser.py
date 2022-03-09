@@ -6,8 +6,8 @@ def tokens(inp):
     return [x[1] for x in ts if x[1]!='']
     
 def parset(dsl, ts):
-    if ts[0] in dsl.Ops:
-        op = ts[0]
+    if dsl.is_op(ts[0]):
+        op = dsl.to_op(ts[0])
         ts = ts[1:]
         assert ts[0] == '('
         ts = ts[1:]

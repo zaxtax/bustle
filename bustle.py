@@ -1,66 +1,6 @@
 import torch
-from stringprops import props_str, props_int, props_str2str, props_int2str
 
 from model import Rater
-
-def ArithDsl():
-    Ops = ["add", "mul", "div", "neg", "lt", "if"]
-    Types = ["int", "bool"]
-
-    def execute(op, args):
-        if op == "add":
-            return args[0] + args[1]
-        elif op == "mul":
-            return args[0] * args[1]
-        elif op == "div":
-            return args[0] / args[1]
-        elif op == "neg":
-            return -args[0]
-        elif op == "lt":
-            return args[0] < args[1]
-        elif op == "if":
-            return args[1] if args[0] else args[2]
-        else:
-            assert False
-
-    def types(op):
-        if op in ["neg"]:
-            return ("int", ("int",))
-        elif op in ["add", "mul", "div"]:
-            return ("int", ("int", "int"))
-        elif op in ["lt"]:
-            return ("bool", ("int", "int"))
-        elif op in ["if"]:
-            return ("int", ("bool", "int", "int"))
-        else:
-            assert False
-
-    def extractConstants(I, O, It, Ot):
-        cs = [0, 1]
-        return [("int", (c, [c for _ in range(len(O))])) for c in cs]
-
-    return Dsl(Ops, Types, execute, types, extractConstants)
-
-
-class Dsl:
-    def __init__(self, Ops, Types, execute, types, extractConstants):
-        self.Ops = Ops
-        self.Types = Types
-        self.execute = execute
-        self.types = types
-        self.extractConstants = extractConstants
-
-    def arity(self, op):
-        return len(self.argtypes(op))
-
-    def argtypes(self, op):
-        _, ts = self.types(op)
-        return ts
-
-    def returntype(self, op):
-        t, _ = self.types(op)
-        return t
-
 
 def executeV(dsl, op, args):
     arg_exps = [e for e, x in args]
@@ -275,8 +215,8 @@ def reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w):
 
 
 def test():
+    from arithdsl import ArithDsl
     al = ArithDsl()
-    llProps = [props_str, props_int, props_str2str, props_int2str]
     llProps = [
         (("int",), [lambda inp: inp % 2 == 0]),
         (("bool",), [lambda b: b]),
