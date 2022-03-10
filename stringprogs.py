@@ -124,6 +124,10 @@ def test():
         print('ast', ast)
         txt = printer(sl, ast)
         print('print', txt)
+        ast2 = parse(sl, txt)
+        txt2 = printer(sl, ast2)
+        assert ast == ast2
+        
         
 if __name__ == "__main__":
     print("running tests...")
