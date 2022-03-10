@@ -30,8 +30,8 @@ def parset(dsl, ts):
         except ValueError:
             assert False, "expected an input (x followed by number), not %s" % x
         return (("input", r), ts[1:])
-    elif ts[0].startswith('"'):
-        return (ts[0], ts[1:])
+    elif ts[0].startswith('"'): # FIXME: poor support
+        return (ts[0][1:-1], ts[1:])
     else:
         negate = False
         if ts[0] == '-':
@@ -49,13 +49,18 @@ def parse(dsl, inp):
     return exp
 
 def printer(dsl, x):
+    print(x)
     if type(x) is tuple or type(x) is list:
         if x[0] == 'input':
             return "var_"+str(x[1])
         else:
             return x[0]+"("+", ".join([printer(dsl, arg) for arg in x[1]])+")"
-    else:
+    elif type(x) is str:
+        return '"'+x+'"' # FIXME: poor support
+    elif type(x) is int:
         return str(x)
+    else:
+        assert False, "unexpected expression %s" % x
 
 def test():
     from arithdsl import ArithDsl

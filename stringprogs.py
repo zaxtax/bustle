@@ -116,11 +116,14 @@ stringprogs = [
 
 def test():
     from stringdsl import StringDsl
-    from dslparser import parse
+    from dslparser import parse, printer
     sl = StringDsl()
     for prog in stringprogs:
         print('parsing', prog)
-        parse(sl, prog)
+        ast = parse(sl, prog)
+        print('ast', ast)
+        txt = printer(sl, ast)
+        print('print', txt)
         
 if __name__ == "__main__":
     print("running tests...")
