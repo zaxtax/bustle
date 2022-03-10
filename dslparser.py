@@ -23,17 +23,23 @@ def parset(dsl, ts):
         assert ts[0] == ')'
         ts = ts[1:]
         return ((op, args), ts)
-    elif ts[0].startswith("x"):
+    elif ts[0].startswith("var_"):
         x = ts[0]
         try:
-            r = int(x[1:])
+            r = int(x[4:])
         except ValueError:
             assert False, "expected an input (x followed by number), not %s" % x
         return (("input", r), ts[1:])
+    elif ts[0].startswith('"'):
+        return (ts[0], ts[1:])
     else:
+        negate = False
+        if ts[0] == '-':
+            negate = True
+            ts = ts[1:]
         try:
             r = int(ts[0])
-            return (r, ts[1:])
+            return (-r if negate else r, ts[1:])
         except ValueError:
             assert False, "unexpected token "+ts[0]
 
@@ -45,7 +51,7 @@ def parse(dsl, inp):
 def printer(dsl, x):
     if type(x) is tuple or type(x) is list:
         if x[0] == 'input':
-            return 'x'+str(x[1])
+            return "var_"+str(x[1])
         else:
             return x[0]+"("+", ".join([printer(dsl, arg) for arg in x[1]])+")"
     else:
@@ -54,10 +60,10 @@ def printer(dsl, x):
 def test():
     from arithdsl import ArithDsl
     al = ArithDsl()
-    assert ("add", [("input", 0), 1]) == parse(al, "add(x0, 1)")
-    assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == parse(al, "if(lt(x0, x1), 1, 0)")
-    assert "add(x0, 1)" == printer(al, ("add", [("input", 0), 1]))
-    assert "if(lt(x0, x1), 1, 0)" == printer(al, ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]))
+    assert ("add", [("input", 0), 1]) == parse(al, "add(var_0, 1)")
+    assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == parse(al, "if(lt(var_0, var_1), 1, 0)")
+    assert "add(var_0, 1)" == printer(al, ("add", [("input", 0), 1]))
+    assert "if(lt(var_0, var_1), 1, 0)" == printer(al, ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]))
 
 if __name__ == "__main__":
     print("running tests...")

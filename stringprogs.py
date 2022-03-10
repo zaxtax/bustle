@@ -1,6 +1,6 @@
 stringprogs = [
     # add decimal point if not present
-    'IF(ISERROR(FIND(".", var_0)), CONCATENATE(var_0, ".0"), var_0)'
+    'IF(EQUALS(-1, FIND(".", var_0)), CONCATENATE(var_0, ".0"), var_0)'
     ,
     # add plus sign to positive integers
     'IF(EXACT(LEFT(var_0, 1), "-"), var_0, CONCATENATE("+", var_0))'
@@ -24,10 +24,10 @@ stringprogs = [
     'TO_TEXT(DIVIDE(MINUS(LEN(var_0), LEN(SUBSTITUTE(var_0, var_1, ""))), LEN(var_1)))'
     ,
     # create email address from name and company
-    'LOWER(CONCATENATE(LEFT(var_0, 1), var_1, "@", var_2, ".com"))'
+    'LOWER(CONCATENATE(LEFT(var_0, 1), CONCATENATE(var_1, CONCATENATE("@", CONCATENATE(var_2, ".com")))))'
     ,
     # change DDMMYYYY date to MM/DD/YYYY
-    'CONCATENATE(MID(var_0, 3, 2), "/", REPLACE(var_0, 3, 2, "/"))'
+    'CONCATENATE(MID(var_0, 3, 2), CONCATENATE("/", REPLACE(var_0, 3, 2, "/")))'
     ,
     # change YYYY-MM-DD date to YYYY/MM/DD
     'SUBSTITUTE(var_0, "-", "/")'
@@ -36,10 +36,10 @@ stringprogs = [
     'SUBSTITUTE(RIGHT(var_0, 5), "-", "/")'
     ,
     # extract the part of a URL between the 2nd and 3rd slash
-    'MID(var_0, ADD(FIND("//", var_0), 2), MINUS(MINUS(FIND("/", var_0, 9), FIND("/", var_0)), 2))'
+    'MID(var_0, ADD(FIND("//", var_0), 2), MINUS(MINUS(FINDI("/", var_0, 9), FIND("/", var_0)), 2))'
     ,
     # extract the part of a URL starting from the 3rd slash
-    'RIGHT(var_0, ADD(1, MINUS(LEN(var_0), FIND("/", var_0, ADD(FIND("//", var_0), 2)))))'
+    'RIGHT(var_0, ADD(1, MINUS(LEN(var_0), FINDI("/", var_0, ADD(FIND("//", var_0), 2)))))'
     ,
     # get first name from second column
     'LEFT(var_1, MINUS(FIND(" ", var_1), 1))'
@@ -51,16 +51,16 @@ stringprogs = [
     'RIGHT(var_0, MINUS(LEN(var_0), FIND(" ", var_0)))'
     ,
     # output "Completed" if 100%, "Not Yet Started" if 0%, "In Progress" otherwise
-    'IF(var_0="100%", "Completed", IF(var_0="0%", "Not Yet Started", "In Progress"))'
+    'IF(EXACT(var_0,"100%"), "Completed", IF(EXACT(var_0,"0%"), "Not Yet Started", "In Progress"))'
     ,
     # enclose negative numbers in parentheses
     'IF(EXACT(LEFT(var_0, 1), "-"), CONCATENATE(SUBSTITUTE(var_0, "-", "("), ")"), var_0)'
     ,
     # pad text with spaces to a given width
-    'CONCATENATE(REPT(" ", MINUS(VALUE(var_1), LEN(var_0))), var_0)'
+    'CONCATENATE(REPEAT(" ", MINUS(VALUE(var_1), LEN(var_0))), var_0)'
     ,
     # pad number with 0 to width
-    'CONCATENATE(REPT("0", MINUS(5, LEN(var_0))), var_0)'
+    'CONCATENATE(REPEAT("0", MINUS(5, LEN(var_0))), var_0)'
     ,
     # the depth of a path, i.e., count the number of /
     'TO_TEXT(MINUS(LEN(var_0), LEN(SUBSTITUTE(var_0, "/", ""))))'
@@ -72,7 +72,7 @@ stringprogs = [
     'CONCATENATE("Mr. ", RIGHT(var_0, MINUS(LEN(var_0), FIND(" ", var_0))))'
     ,
     # prepend Mr. or Ms. to last name depending on gender
-    'CONCATENATE(IF(EXACT(var_1, "male"), "Mr. ", "Ms. "),  18 RIGHT(var_0, MINUS(LEN(var_0), FIND(" ", var_0))))'
+    'CONCATENATE(IF(EXACT(var_1, "male"), "Mr. ", "Ms. "), RIGHT(var_0, MINUS(LEN(var_0), FIND(" ", var_0))))'
     ,
     # remove leading and trailing spaces and tabs, and lowercase
     'TRIM(LOWER(var_0))'
@@ -81,7 +81,7 @@ stringprogs = [
     'SUBSTITUTE(var_0, "<COMPANY>", var_1)'
     ,
     # replace com with org
-    'SUBSTITUTE(var_0, "com", "org", 1)'
+    'SUBSTITUTEI(var_0, "com", "org", 1)'
     ,
     # select the first string, or the second if the first is NONE
     'IF(EXACT(var_0, "NONE"), var_1, var_0)'
@@ -113,3 +113,16 @@ stringprogs = [
     # create capitalized acronym from two words in one cell
     'UPPER(CONCATENATE(LEFT(var_0, 1), MID(var_0, ADD(FIND(" ", var_0), 1), 1)))'
 ]
+
+def test():
+    from stringdsl import StringDsl
+    from dslparser import parse
+    sl = StringDsl()
+    for prog in stringprogs:
+        print('parsing', prog)
+        parse(sl, prog)
+        
+if __name__ == "__main__":
+    print("running tests...")
+    test()
+    print("done")
