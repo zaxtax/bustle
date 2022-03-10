@@ -14,6 +14,15 @@ class Dsl:
 
         self.opCache = makeOpCache(Ops)
 
+    def eval(self, x, inp):
+        if type(x) is tuple or type(x) is list:
+            if x[0] == 'input':
+                return inp[x[1]]
+            else:
+                return self.execute(x[0], [self.eval(e, inp) for e in x[1]])
+        else:
+            return x
+
     def isOp(self, token):
         return token.lower() in self.opCache
 
@@ -30,3 +39,8 @@ class Dsl:
     def returntype(self, op):
         t, _ = self.types(op)
         return t
+
+def test():
+    from arithdsl import ArithDsl
+    al = ArithDsl()
+    assert 2 == al.eval(("add", [("input", 0), 1]), [1])
