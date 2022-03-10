@@ -15,10 +15,10 @@ stringprogs = [
     'REPLACE(LOWER(var_0), 1, 1, UPPER(LEFT(var_0, 1)))'
     ,
     # whether the first string contains the second
-    'TO_TEXT(ISNUMBER(FIND(var_1, var_0)))'
+    'TO_TEXT(ISNAT(FIND(var_1, var_0)))'
     ,
     # whether the first string contains the second, ignoring case
-    'TO_TEXT(ISNUMBER(FIND(LOWER(var_1), LOWER(var_0))))'
+    'TO_TEXT(ISNAT(FIND(LOWER(var_1), LOWER(var_0))))'
     ,
     # count the number of times the second string appears in the first
     'TO_TEXT(DIVIDE(MINUS(LEN(var_0), LEN(SUBSTITUTE(var_0, var_1, ""))), LEN(var_1)))'
@@ -118,6 +118,7 @@ def test():
     from stringdsl import StringDsl
     from dslparser import parse, printer
     sl = StringDsl()
+    dummy_inp = ['hello' for i in range(3)]
     for prog in stringprogs:
         print('parsing', prog)
         ast = parse(sl, prog)
@@ -127,6 +128,9 @@ def test():
         ast2 = parse(sl, txt)
         txt2 = printer(sl, ast2)
         assert ast == ast2
+
+        v = sl.eval(ast, dummy_inp)
+        print('value', v)
         
         
 if __name__ == "__main__":

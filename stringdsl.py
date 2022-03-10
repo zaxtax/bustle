@@ -12,7 +12,7 @@ def StringDsl():
            'Find', 'FindI', 'Len',
            'Exact',
            'Equals', 'GT', 'GE',
-           'IsNumber','Value'
+           'IsNat','Value'
            ]
     Types = ['str', 'int', 'bool']
 
@@ -24,17 +24,22 @@ def StringDsl():
         elif op == 'Right':
             return x[0][len(x[0])-x[1]:]
         elif op == 'Mid':
-            return x[0][x[1]:x[2]]
+            return x[0][x[1]:x[1]+x[2]]
         elif op == 'Replace':
-            assert False, "TODO"
+            a = x[0]
+            start = x[1]
+            length = x[2]
+            r = x[3]
+            ret = a[:start]+r+a[start+length:]
+            return ret
         elif op == 'Trim':
             return x[0].strip()
         elif op == 'Repeat':
             return x[0]*x[1]
         elif op == 'Substitute':
-            assert False, "TODO"
+            return x[0].replace(x[1], x[2])
         elif op == 'SubstituteI':
-            assert False, "TODO"
+            return x[0].replace(x[1], x[2], x[3])
         elif op == 'To_Text':
             return str(x[0])
         elif op == 'Lower':
@@ -52,9 +57,9 @@ def StringDsl():
         elif op == 'Divide':
             return x[0] // x[1]
         elif op == 'Find':
-            assert False, "TODO"
+            return x[1].find(x[0])
         elif op == 'FindI':
-            assert False, "TODO"
+            return x[1].find(x[0], x[2])
         elif op == 'Len':
             return len(x[0])
         elif op == 'Exact':
@@ -65,10 +70,14 @@ def StringDsl():
             return x[0]>x[1]
         elif op == 'GE':
             return x[0]>=x[1]
-        elif op == 'IsNumber':
-            assert False, "TODO"
+        elif op == 'IsNat':
+            return x[0]>=0
         elif op == 'Value':
-            assert False, "TODO"
+            try:
+                return int(x[0])
+            except ValueError:
+                print('warning: cannot convert %s to int' % x[0])
+                return 0
         else:
             assert False
 
@@ -111,7 +120,7 @@ def StringDsl():
             return (b, (s, s))
         elif op in ['Equals', 'GT', 'GE']:
             return (b, (i, i))
-        elif op == 'IsNumber':
+        elif op == 'IsNat':
             return (b, (s,))
         elif op == 'Value':
             return (i, (s,))

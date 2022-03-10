@@ -11,9 +11,9 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 - [x] allow multiple DSLs
 - [x] support dynamic errors (such as division by zero) in DSL execution
 - [x] [`stringdsl`](stringdsl.py) implement string manipulation DSL (Figure 1)
-  - [ ] implemement remaining TODOs in operation execution
+  - [x] implemement remaining TODOs in operation execution
   - [ ] for initialization, extract string constants from I/O examples
-  - [ ] rectify the DSL to match the benchmarks
+  - [x] rectify the DSL to match the benchmarks
   - [x] convert property lists from Appendix C
 - [ ] implement ML add-ons (Algorithm 1 including blue lines)
   - [x] scaffold the blue lines
@@ -34,6 +34,6 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 
 ### Best practices
 
-- [ ] build a (DSL-paramterized) program executor for the synthesized expressions
+- [x] build a (DSL-parameterized) program executor
 - [ ] improve the DSL interface so that implementations of DSLs are more concise?
 - [ ] use a proper Python testing framework?
