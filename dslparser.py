@@ -49,7 +49,6 @@ def parse(dsl, inp):
     return exp
 
 def printer(dsl, x):
-    print(x)
     if type(x) is tuple or type(x) is list:
         if x[0] == 'input':
             return "var_"+str(x[1])
