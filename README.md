@@ -28,7 +28,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 - [x] write parser for string DSL
 - [x] write a pretty printer
 - [ ] use the benchmarks mentioned in the paper
-  - [ ] Appendix B
+  - [x] Appendix B
   - [ ] [SysGus](https://github.com/SyGuS-Org/benchmarks)
 - [ ] generate data from synthesis search (last paragraph of Section 3.1)
 
