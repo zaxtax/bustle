@@ -23,6 +23,9 @@ class Dsl:
         else:
             return x
 
+    def evalIO(self, exp, inps):
+        return [self.eval(exp, inp) for inp in zip(*inps)]
+    
     def isOp(self, token):
         return token.lower() in self.opCache
 
@@ -44,3 +47,4 @@ def test():
     from arithdsl import ArithDsl
     al = ArithDsl()
     assert 2 == al.eval(("add", [("input", 0), 1]), [1])
+    assert [2,3,4] == al.evalIO(("add", [("input", 0), 1]), [[1,2,3]])
