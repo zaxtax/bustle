@@ -29,7 +29,7 @@ for epoch in tqdm(range(100)):
         pos, neg = sample
 
         for (ex, valence) in ((pos, 1), (neg, 0)):
-            (I, V, O) = pos
+            (I, V, O) = ex
             Vt = dsl.inferType(V[0])
 
             key = (It, Ot, Vt)
