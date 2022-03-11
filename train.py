@@ -26,7 +26,7 @@ loss = BCELoss()
 
 for epoch in tqdm(range(100)):
     Ts = {}
-    for sample in dataset:
+    for i, sample in enumerate(dataset):
         pos, neg = sample
 
         for (ex, valence) in ((pos, 1), (neg, 0)):
@@ -56,7 +56,9 @@ for epoch in tqdm(range(100)):
             outputs = M(s)
             #print('outputs', outputs)
             loss_v = loss(outputs, torch.tensor([1.0*valence]))
+            if i == 0 and valence == 1:
+               print("loss", loss_v.item())
             loss_v.backward()
             optimizer.step()
             train_losses.append(loss_v.item())
-    print('loss', Ts)
+    # print('loss', Ts)

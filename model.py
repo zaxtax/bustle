@@ -11,9 +11,9 @@ class Rater(nn.Module):
         super().__init__()
 
         self.input_dim = input_dim
-        self.input_fc = nn.Linear(input_dim, 250)
-        self.hidden_fc = nn.Linear(250, 100)
-        self.output_fc = nn.Linear(100, 1)
+        self.input_fc = nn.Linear(input_dim, 25)
+        self.hidden_fc = nn.Linear(25, 10)
+        self.output_fc = nn.Linear(10, 1)
         self.output_prob = nn.Sigmoid()
 
     def forward(self, x):
