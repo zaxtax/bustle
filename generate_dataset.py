@@ -2,6 +2,7 @@ from bustle import bustle
 from stringdsl import stringdsl
 import itertools
 import random
+import string
 
 def subexpressions(exp):
     r = []
@@ -29,15 +30,18 @@ def select_expression(search, dsl, inp):
     return ((inp,pos,o), (inp, neg, o))
 
 typ = ('str', ('str',))
-
-def generate_input():
+charset = string.printable[:-6]
+def generate_input(N=10, LB=5, UB=8):
     # TODO: maybe generate more interesting inputs that satisfy constraints
     #   such as index within range
     # numbers?
     # dates?
     # URLs?
     # words?
-    return [["hello", "world"]]
+    inp = []
+    for i in [random.randint(LB, UB) for _ in range(N)]:
+        inp += "".join([random.choice(charset) for _ in range(i)])
+    return [inp]
 
 def generate_dataset(dsl=stringdsl):
     data = []
