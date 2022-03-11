@@ -17,7 +17,7 @@ def initialModel(key):
     (It, Ot, Vt) = key
     return Rater(
         propertySignatureSize(It, Ot, llProps) +
-        propertySignatureSize(Vt, Ot, llProps)
+        propertySignatureSize((Vt,), Ot, llProps)
     )
     
 Ms = {}
@@ -50,14 +50,13 @@ for epoch in tqdm(range(100)):
             optimizer.zero_grad()
     
             s1 = propertySignature(I, It, O, Ot, llProps)
-            s2 = propertySignature(V, Vt, O, Ot, llProps)
+            s2 = propertySignature([V], (Vt,), O, Ot, llProps)
             s = torch.cat([s1, s2])
 
             outputs = M(s)
-            #print('outputs', outputs)
             loss_v = loss(outputs, torch.tensor([1.0*valence]))
-            if i == 0 and valence == 1:
-               print("loss", loss_v.item())
+            if i == 0 and Vt == 'str':
+               print("loss", Vt, loss_v.item())
             loss_v.backward()
             optimizer.step()
             train_losses.append(loss_v.item())
