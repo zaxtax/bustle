@@ -143,7 +143,17 @@ def StringDsl():
         # TODO: string constants extracted from I/O examples
         return intVs + strVs
 
-    return Dsl(Ops, Types, execute, types, extractConstants)
+    def inferType(v):
+        if type(v) is str:
+            return 'str'
+        elif type(v) is int:
+            return 'int'
+        elif type(v) is bool:
+            return 'bool'
+        else:
+            assert False
+
+    return Dsl(Ops, Types, execute, types, extractConstants, inferType)
 
 stringdsl = StringDsl()
 

@@ -36,4 +36,12 @@ def ArithDsl():
         cs = [0, 1]
         return [("int", (c, [c for _ in range(len(O))])) for c in cs]
 
-    return Dsl(Ops, Types, execute, types, extractConstants)
+    def inferType(v):
+        if type(v) is int:
+            return 'int'
+        elif type(v) is bool:
+            return 'bool'
+        else:
+            assert False
+
+    return Dsl(Ops, Types, execute, types, extractConstants, inferType)

@@ -5,12 +5,13 @@ def makeOpCache(Ops):
     return cache
 
 class Dsl:
-    def __init__(self, Ops, Types, execute, types, extractConstants):
+    def __init__(self, Ops, Types, execute, types, extractConstants, inferType):
         self.Ops = Ops
         self.Types = Types
         self.execute = execute
         self.types = types
         self.extractConstants = extractConstants
+        self.inferType = inferType
 
         self.opCache = makeOpCache(Ops)
 
