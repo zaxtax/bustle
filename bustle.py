@@ -84,7 +84,7 @@ def initialVs(dsl, I, O, It, Ot):
 #   type signature typeSig
 #   property list of typed lists of functions llProps
 #   models Ms, a dictionary keyed by types of (input, output, intermediary)
-def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
+def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100):
     Ot, It = typeSig
     s_io = propertySignature(I, It, O, Ot, llProps)
 
@@ -95,7 +95,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None):
         if r is not None:
             return r
 
-    for w in range(2, 100):
+    for w in range(2, N):
         set_empty_e_if_none(dsl, E, w)
         for op in dsl.Ops:
             Vt = dsl.returntype(op)
@@ -198,7 +198,9 @@ def discrete_prediction(w, p):
     return w + 5 - d
 
 def reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w):
-    if Ms is None or s_io is None or s_vo is None:
+    if Ms is None:
+        return w
+    if s_io is None or s_vo is None:
         return w + 5
 
     wp = w

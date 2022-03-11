@@ -76,7 +76,7 @@ def StringDsl():
             try:
                 return int(x[0])
             except ValueError:
-                print('warning: cannot convert %s to int' % x[0])
+                #print('warning: cannot convert %s to int' % x[0])
                 return 0
         else:
             assert False
@@ -144,6 +144,8 @@ def StringDsl():
         return intVs + strVs
 
     return Dsl(Ops, Types, execute, types, extractConstants)
+
+stringdsl = StringDsl()
 
 def test():
     from bustle import bustle, propertySignatureSize
