@@ -21,6 +21,7 @@ def initialModel(key):
     )
     
 Ms = {}
+optimizers = {}
 loss = BCELoss()
 
 for epoch in tqdm(range(100)):
@@ -34,10 +35,12 @@ for epoch in tqdm(range(100)):
 
             key = (It, Ot, Vt)
             M = Ms.get(key)
+            optimizer = optimizers.get(key)
             if M is None:
                 M = initialModel(key)
                 Ms[key] = M
-                optimizer = torch.optim.Adam(M.parameters(), lr=0.2)
+                optimizer = torch.optim.Adam(M.parameters(), lr=0.001)
+                optimizers[key] = optimizer
             train_losses = Ts.get(key)
             if train_losses is None:
                 train_losses = []
@@ -51,7 +54,7 @@ for epoch in tqdm(range(100)):
             s = torch.cat([s1, s2])
 
             outputs = M(s)
-            print('outputs', outputs)
+            #print('outputs', outputs)
             loss_v = loss(outputs, torch.tensor([1.0*valence]))
             loss_v.backward()
             optimizer.step()
