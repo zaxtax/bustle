@@ -22,12 +22,12 @@ def initialModel(key):
 Ms = {}
 loss = BCELoss()
 
-for epoch in tqdm(range(10)):
+for epoch in tqdm(range(100)):
     Ts = {}
     for sample in dataset:
         pos, neg = sample
 
-        for (ex, valence) in ((pos, 1), (neg, -1)):
+        for (ex, valence) in ((pos, 1), (neg, 0)):
             (I, V, O) = pos
             Vt = dsl.inferType(V[0])
 
@@ -37,7 +37,10 @@ for epoch in tqdm(range(10)):
                 M = initialModel(key)
                 Ms[key] = M
                 optimizer = torch.optim.Adam(M.parameters(), lr=0.001)
-            train_losses = Ts.get(key, [])
+            train_losses = Ts.get(key)
+            if train_losses is None:
+                train_losses = []
+                Ts[key] = train_losses
             M.train()
 
             optimizer.zero_grad()
@@ -47,8 +50,9 @@ for epoch in tqdm(range(10)):
             s = torch.cat([s1, s2])
 
             outputs = M(s)
+            print('outputs', outputs)
             loss_v = loss(outputs, torch.tensor([1.0*valence]))
             loss_v.backward()
             optimizer.step()
             train_losses.append(loss_v.item())
-    print('loss', train_losses)
+    #print('loss', Ts)
