@@ -51,3 +51,4 @@ for epoch in tqdm(range(10)):
             loss_v.backward()
             optimizer.step()
             train_losses.append(loss_v.item())
+    print('loss', train_losses)
