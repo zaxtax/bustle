@@ -30,8 +30,9 @@ def select_expression(search, dsl, inp):
     return ((inp,pos,o), (inp, neg, o))
 
 typ = ('str', ('str',))
-charset = string.printable[:-6]
-def generate_input(N=10, LB=5, UB=8):
+#charset = string.printable[:-6]
+charset = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ,.-/'
+def generate_input(N=3, LB=5, UB=8):
     # TODO: maybe generate more interesting inputs that satisfy constraints
     #   such as index within range
     # numbers?
@@ -40,7 +41,7 @@ def generate_input(N=10, LB=5, UB=8):
     # words?
     inp = []
     for i in [random.randint(LB, UB) for _ in range(N)]:
-        inp += "".join([random.choice(charset) for _ in range(i)])
+        inp.append("".join([random.choice(charset) for _ in range(i)]))
     return [inp]
 
 def generate_dataset(dsl=stringdsl):
@@ -50,7 +51,7 @@ def generate_dataset(dsl=stringdsl):
     N_selected = 10
     for i in range(N_search):
         inp = generate_input()
-        search = bustle(dsl, typ, inp, ["dummy" for _ in inp], N=N)
+        search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N)
         search = [v for i in range(2, N) for v in search[i]['str']]
         for j in range(N_selected):
             data.append(select_expression(search, dsl, inp))
