@@ -31,6 +31,12 @@ def select_expression(search, dsl, inp):
 typ = ('str', ('str',))
 
 def generate_input():
+    # TODO: maybe generate more interesting inputs that satisfy constraints
+    #   such as index within range
+    # numbers?
+    # dates?
+    # URLs?
+    # words?
     return [["hello", "world"]]
 
 def generate_dataset(dsl=stringdsl):
