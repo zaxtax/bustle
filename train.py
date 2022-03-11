@@ -13,6 +13,7 @@ dsl = stringdsl
 dataset = generate_dataset()
 
 def initialModel(key):
+    print('initial model called for', key)
     (It, Ot, Vt) = key
     return Rater(
         propertySignatureSize(It, Ot, llProps) +
@@ -36,7 +37,7 @@ for epoch in tqdm(range(100)):
             if M is None:
                 M = initialModel(key)
                 Ms[key] = M
-                optimizer = torch.optim.Adam(M.parameters(), lr=0.001)
+                optimizer = torch.optim.Adam(M.parameters(), lr=0.2)
             train_losses = Ts.get(key)
             if train_losses is None:
                 train_losses = []
@@ -55,4 +56,4 @@ for epoch in tqdm(range(100)):
             loss_v.backward()
             optimizer.step()
             train_losses.append(loss_v.item())
-    #print('loss', Ts)
+    print('loss', Ts)
