@@ -26,7 +26,16 @@ class Dsl:
 
     def evalIO(self, exp, inps):
         return [self.eval(exp, inp) for inp in zip(*inps)]
-    
+
+    def numInputs(self, x):
+        if type(x) is tuple or type(x) is list:
+            if x[0] == 'input':
+                return x[1]+1
+            else:
+                return max(self.numInputs(e) for e in x[1])
+        else:
+            return 0
+
     def isOp(self, token):
         return token.lower() in self.opCache
 

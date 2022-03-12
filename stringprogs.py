@@ -151,7 +151,7 @@ def test():
     from dslparser import parse, printer
     sl = StringDsl()
     dummy_inp = ['hello' for i in range(3)]
-    inps = all_inputs(3)
+    inpss = [all_inputs(i) for i in range(4)]
     for prog in stringprogs:
         print('parsing', prog)
         ast = parse(sl, prog)
@@ -162,6 +162,7 @@ def test():
         txt2 = printer(sl, ast2)
         assert ast == ast2
 
+        inps = inpss[sl.numInputs(ast)]
         try:
             v = sl.eval(ast, dummy_inp)
             print('value', v)
