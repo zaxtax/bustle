@@ -15,10 +15,10 @@ stringprogs = [
     'REPLACE(LOWER(var_0), 1, 1, UPPER(LEFT(var_0, 1)))'
     ,
     # whether the first string contains the second
-    'TO_TEXT(ISNAT(FIND(var_1, var_0)))'
+    'TO_TEXT(GE(FIND(var_1, var_0), 0))'
     ,
     # whether the first string contains the second, ignoring case
-    'TO_TEXT(ISNAT(FIND(LOWER(var_1), LOWER(var_0))))'
+    'TO_TEXT(GE(FIND(LOWER(var_1), LOWER(var_0)), 0))'
     ,
     # count the number of times the second string appears in the first
     'TO_TEXT(DIVIDE(MINUS(LEN(var_0), LEN(SUBSTITUTE(var_0, var_1, ""))), LEN(var_1)))'

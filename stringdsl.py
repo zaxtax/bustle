@@ -12,7 +12,7 @@ def StringDsl():
            'Find', 'FindI', 'Len',
            'Exact',
            'Equals', 'GT', 'GE',
-           'IsNat','Value'
+           'IsNumber','Value'
            ]
     Types = ['str', 'int', 'bool']
 
@@ -70,8 +70,8 @@ def StringDsl():
             return x[0]>x[1]
         elif op == 'GE':
             return x[0]>=x[1]
-        elif op == 'IsNat':
-            return x[0]>=0
+        elif op == 'IsNumber':
+            return x[0].isnumeric()
         elif op == 'Value':
             return int(x[0])
         else:
@@ -116,7 +116,7 @@ def StringDsl():
             return (b, (s, s))
         elif op in ['Equals', 'GT', 'GE']:
             return (b, (i, i))
-        elif op == 'IsNat':
+        elif op == 'IsNumber':
             return (b, (s,))
         elif op == 'Value':
             return (i, (s,))
