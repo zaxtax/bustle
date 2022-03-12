@@ -7,7 +7,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 
 - [x] [`bustle`](bustle.py) implement basic bottom-up synthesis (Algorithm 1 without blue lines)
   - [ ] bug fix: check that `Vt` is correctly wrapped when passed to `propertySignature`
-  - [ ] think carefully about error handling and program synthesis: can the program make assumptions about inputs?
+  - [ ] think carefully about error handling and program synthesis: can the program make assumptions about inputs? how can we handle `IF(ISNUMBER(X), VALUE(x), 0)`? this requires a sub-expression failing on the whole, but not on the selected cases.
 - [x] test implementation on tiny arithmetic language
 - [x] add types to DSL operations and extend tiny arithmetic language with boolean types and `if` operation
 - [x] allow multiple DSLs
