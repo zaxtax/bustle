@@ -73,11 +73,7 @@ def StringDsl():
         elif op == 'IsNat':
             return x[0]>=0
         elif op == 'Value':
-            try:
-                return int(x[0])
-            except ValueError:
-                #print('warning: cannot convert %s to int' % x[0])
-                return 0
+            return int(x[0])
         else:
             assert False
 

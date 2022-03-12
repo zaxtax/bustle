@@ -114,11 +114,44 @@ stringprogs = [
     'UPPER(CONCATENATE(LEFT(var_0, 1), MID(var_0, ADD(FIND(" ", var_0), 1), 1)))'
 ]
 
+input = [
+    "", " ",
+    "1", "12", "12.", "12.0", "0", ".3", "15e-15",
+    "-1", "-12", "-12.0",
+    "12:00", "12:01",
+    "Cambridge, ma", "cambridge, ma", "CAMBRIDGE, MA",
+    "Cambridge ma", "cambridge ma", "CAMBRIDGE MA",
+    "rome", "Rome", "rome of Italy", "Rome of Italy",
+    "hello world", "HELLO WORLD", "Hello World", "hellO WORLD",
+    "02032022", "2022-03-02",
+    "https://github.com/zaxtax/bustle/",
+    "https://github.com/zaxtax/bustle#readme",
+    "0%", "100%", "50%", "34.3%",
+    "(3 + 4 - 5)", "(3 + 4 + -5)", "(3 + 4) - 5", "(3 + 4) + -5",
+    "morning", "afternoon",
+    "hello", "world", "HELLO", "WORLD", "HELLo", "hellO",
+    "o", "l", "z",
+    "Gerald Jay Sussman", "Gerry Sussman", "Gerald J. Sussman", "Gerald J Sussman",
+    "3", "4", "5",
+    "male", "female",
+    "<COMPANY>",
+    "<COMPANY>, inc",
+    "NONE",
+    "Github",
+    ]
+
+def all_inputs(n, inps=[[]]):
+    if n==0:
+        return list(zip(*inps))
+    else:
+        return all_inputs(n-1, [[x]+inp for x in input for inp in inps])
+
 def test():
     from stringdsl import StringDsl
     from dslparser import parse, printer
     sl = StringDsl()
     dummy_inp = ['hello' for i in range(3)]
+    inps = all_inputs(3)
     for prog in stringprogs:
         print('parsing', prog)
         ast = parse(sl, prog)
@@ -129,10 +162,14 @@ def test():
         txt2 = printer(sl, ast2)
         assert ast == ast2
 
-        v = sl.eval(ast, dummy_inp)
-        print('value', v)
-        
-        
+        try:
+            v = sl.eval(ast, dummy_inp)
+            print('value', v)
+
+            sl.evalIO(ast, inps)
+        except:
+            continue
+
 if __name__ == "__main__":
     print("running tests...")
     test()
