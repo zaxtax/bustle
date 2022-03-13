@@ -2,6 +2,7 @@ import torch
 
 from model import Rater
 
+
 def executeV(dsl, op, args):
     arg_exps = [e for e, x in args]
     arg_vals = [x for e, x in args]
@@ -69,12 +70,14 @@ def set_empty_e_if_none(dsl, E, w):
     if w not in E:
         E[w] = empty_e(dsl.Types)
 
+
 def inputVs(I, It):
     return [(It[i], (("input", i), I[i])) for i in range(len(I))]
 
 
 def initialVs(dsl, I, O, It, Ot):
     return dsl.extractConstants(I, O, It, Ot) + inputVs(I, It)
+
 
 # The Bustle Synthesis Algorithm (without ML for now)
 # Input: Input-output examples (I,O)
@@ -111,6 +114,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100):
 
     return E  # for debugging
 
+
 def ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl):
     if Vt == Ot and sameO(V, O):
         return expression(V)
@@ -120,6 +124,7 @@ def ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl):
         wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
         addE(dsl, E, wp, Vt, V)
     return None
+
 
 def addE(dsl, E, w, t, V):
     set_empty_e_if_none(dsl, E, w)
@@ -139,6 +144,7 @@ def evaluateProperty(I, prop):
     else:
         return mixed
 
+
 def propertySignatureSize(Its, Ot, llProps):
     size = 0
 
@@ -153,6 +159,7 @@ def propertySignatureSize(Its, Ot, llProps):
                 if typs[0] == It and typs[1] == Ot:
                     size += len(props)
     return size
+
 
 def propertySignature(Is, Its, O, Ot, llProps):
     propSig = []
@@ -180,13 +187,16 @@ def propertySignature(Is, Its, O, Ot, llProps):
     return torch.tensor(propSig).float()
 
 
-def loadModel(src="models/latest.pt", llProps=None):
+def loadModel(src="models/rater_latest.pt", llProps=None):
     try:
         Ms = torch.load(src)
-    except:
-        Ms = {(('int',), 'int', 'int'): Rater(
-            2*propertySignatureSize(('int',), 'int', llProps)
-        )}
+    except FileNotFoundError:
+        print(f"warning: file {src} was not found")
+        Ms = {
+            (("int",), "int", "int"): Rater(
+                2 * propertySignatureSize(("int",), "int", llProps)
+            )
+        }
 
 
 def discrete_prediction(w, p):
@@ -203,6 +213,7 @@ def discrete_prediction(w, p):
     else:
         d = 5
     return w + 5 - d
+
 
 def reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w):
     if Ms is None:
@@ -225,6 +236,7 @@ def reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w):
 
 def test():
     from arithdsl import ArithDsl
+
     al = ArithDsl()
     llProps = [
         (("int",), [lambda inp: inp % 2 == 0]),
@@ -253,6 +265,7 @@ def test():
     assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == bustle(
         al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0], llProps
     )
+
 
 if __name__ == "__main__":
     print("running tests...")
