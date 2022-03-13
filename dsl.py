@@ -4,6 +4,7 @@ def makeOpCache(Ops):
         cache[op.lower()] = op
     return cache
 
+
 class Dsl:
     def __init__(self, Ops, Types, execute, types, extractConstants, inferType):
         self.Ops = Ops
@@ -17,7 +18,7 @@ class Dsl:
 
     def eval(self, x, inp):
         if type(x) is tuple or type(x) is list:
-            if x[0] == 'input':
+            if x[0] == "input":
                 return inp[x[1]]
             else:
                 return self.execute(x[0], [self.eval(e, inp) for e in x[1]])
@@ -29,8 +30,8 @@ class Dsl:
 
     def numInputs(self, x):
         if type(x) is tuple or type(x) is list:
-            if x[0] == 'input':
-                return x[1]+1
+            if x[0] == "input":
+                return x[1] + 1
             else:
                 return max(self.numInputs(e) for e in x[1])
         else:
@@ -53,8 +54,10 @@ class Dsl:
         t, _ = self.types(op)
         return t
 
+
 def test():
     from arithdsl import ArithDsl
+
     al = ArithDsl()
     assert 2 == al.eval(("add", [("input", 0), 1]), [1])
-    assert [2,3,4] == al.evalIO(("add", [("input", 0), 1]), [[1,2,3]])
+    assert [2, 3, 4] == al.evalIO(("add", [("input", 0), 1]), [[1, 2, 3]])

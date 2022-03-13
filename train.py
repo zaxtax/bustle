@@ -7,21 +7,25 @@ from generate_dataset import generate_dataset
 from stringdsl import stringdsl
 from stringprops import llProps
 from bustle import propertySignature, propertySignatureSize
-It = ('str',)
-Ot = 'str'
+
+It = ("str",)
+Ot = "str"
 dsl = stringdsl
 dataset = generate_dataset()
 
+
 def initialModel(key):
-    print('initial model called for', key)
+    print("initial model called for", key)
     (It, Ot, Vt) = key
     return Rater(
-        propertySignatureSize(It, Ot, llProps) +
-        propertySignatureSize((Vt,), Ot, llProps)
+        propertySignatureSize(It, Ot, llProps)
+        + propertySignatureSize((Vt,), Ot, llProps)
     )
+
 
 def saveModel(Ms):
     torch.save(Ms, "models/rater_latest.pt")
+
 
 Ms = {}
 optimizers = {}
@@ -51,15 +55,15 @@ for epoch in tqdm(range(10)):
             M.train()
 
             optimizer.zero_grad()
-    
+
             s1 = propertySignature(I, It, O, Ot, llProps)
             s2 = propertySignature([V], (Vt,), O, Ot, llProps)
             s = torch.cat([s1, s2])
 
             outputs = M(s)
-            loss_v = loss(outputs, torch.tensor([1.0*valence]))
-            if i == 0 and Vt == 'str':
-               print("loss", Vt, loss_v.item())
+            loss_v = loss(outputs, torch.tensor([1.0 * valence]))
+            if i == 0 and Vt == "str":
+                print("loss", Vt, loss_v.item())
             loss_v.backward()
             optimizer.step()
             train_losses.append(loss_v.item())

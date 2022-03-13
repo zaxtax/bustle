@@ -1,5 +1,6 @@
 from dsl import Dsl
 
+
 def ArithDsl():
     Ops = ["add", "mul", "div", "neg", "lt", "if"]
     Types = ["int", "bool"]
@@ -38,9 +39,9 @@ def ArithDsl():
 
     def inferType(v):
         if type(v) is int:
-            return 'int'
+            return "int"
         elif type(v) is bool:
-            return 'bool'
+            return "bool"
         else:
             assert False
 

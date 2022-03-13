@@ -4,14 +4,16 @@ import itertools
 import random
 import string
 
+
 def subexpressions(exp):
     r = []
     r += [exp]
     if type(exp) is tuple or type(exp) is list:
-        if exp[0] == 'input':
+        if exp[0] == "input":
             return r
         r.extend(itertools.chain(*(subexpressions(s) for s in exp[1])))
     return r
+
 
 def handle_expression(exp, search, dsl, inp):
     es = subexpressions(exp)
@@ -22,16 +24,20 @@ def handle_expression(exp, search, dsl, inp):
         neg = random.choice(search)
     return (pos, neg[1])
 
+
 def select_expression(search, dsl, inp):
     sample = random.choice(search)
     exp = sample[0]
     o = sample[1]
-    (pos, neg) =  handle_expression(exp, search, dsl, inp)
-    return ((inp,pos,o), (inp, neg, o))
+    (pos, neg) = handle_expression(exp, search, dsl, inp)
+    return ((inp, pos, o), (inp, neg, o))
 
-typ = ('str', ('str',))
-#charset = string.printable[:-6]
-charset = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ,.-/'
+
+typ = ("str", ("str",))
+# charset = string.printable[:-6]
+charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ,.-/"
+
+
 def generate_input(N=3, LB=5, UB=8):
     # TODO: maybe generate more interesting inputs that satisfy constraints
     #   such as index within range
@@ -44,6 +50,7 @@ def generate_input(N=3, LB=5, UB=8):
         inp.append("".join([random.choice(charset) for _ in range(i)]))
     return [inp]
 
+
 def generate_dataset(dsl=stringdsl):
     data = []
     N = 5
@@ -52,8 +59,7 @@ def generate_dataset(dsl=stringdsl):
     for i in range(N_search):
         inp = generate_input()
         search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N)
-        search = [v for i in range(2, N) for v in search[i]['str']]
+        search = [v for i in range(2, N) for v in search[i]["str"]]
         for j in range(N_selected):
             data.append(select_expression(search, dsl, inp))
     return data
-

@@ -1,20 +1,25 @@
 if __name__ == "__main__":
-    print('bustle')
+    print("bustle")
     import bustle
+
     bustle.test()
 
-    print('dsl')
+    print("dsl")
     import dsl
+
     dsl.test()
 
-    print('dslparser')
+    print("dslparser")
     import dslparser
+
     dslparser.test()
 
-    print('stringdsl')
+    print("stringdsl")
     import stringdsl
+
     stringdsl.test()
 
-    print('stringprogs')
+    print("stringprogs")
     import stringprogs
+
     stringprogs.test()
