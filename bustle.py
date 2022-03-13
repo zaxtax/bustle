@@ -139,50 +139,44 @@ def evaluateProperty(I, prop):
     else:
         return mixed
 
-def propertySignatureSize(It, Ot, llProps):
+def propertySignatureSize(Its, Ot, llProps):
     size = 0
-    # FIXME: Only handle single input for now
-    assert len(It)==1
-    It = It[0]
-    for typs, props in llProps:
-        if len(typs) == 1:
-            if typs[0] == It:
-                size += len(props)
-            if typs[0] == Ot:
-                size += len(props)
-        elif len(typs) == 2:
-            if typs[0] == It and typs[1] == Ot:
-                size += len(props)
+
+    for It in Its:
+        for typs, props in llProps:
+            if len(typs) == 1:
+                if typs[0] == It:
+                    size += len(props)
+                if typs[0] == Ot:
+                    size += len(props)
+            elif len(typs) == 2:
+                if typs[0] == It and typs[1] == Ot:
+                    size += len(props)
     return size
 
-def propertySignature(I, It, O, Ot, llProps):
+def propertySignature(Is, Its, O, Ot, llProps):
     propSig = []
     if llProps is None:
         return None
 
-    # FIXME: Only handle single input for now
-    assert len(I)==1
-    assert len(It)==1
-    I = I[0]
-    It = It[0]
-
-    for typs, props in llProps:
-        if len(typs) == 1:
-            if typs[0] == It:
-                _I = [[i] for i in I]
-                for p in props:
-                    sig = evaluateProperty(_I, p)
-                    propSig.append(sig)
-            if typs[0] == Ot:
-                _O = [[o] for o in O]
-                for p in props:
-                    sig = evaluateProperty(_O, p)
-                    propSig.append(sig)
-        elif len(typs) == 2:
-            if typs[0] == It and typs[1] == Ot:
-                for p in props:
-                    sig = evaluateProperty(zip(I, O), p)
-                    propSig.append(sig)
+    for (I, It) in zip(Is, Its):
+        for typs, props in llProps:
+            if len(typs) == 1:
+                if typs[0] == It:
+                    _I = [[i] for i in I]
+                    for p in props:
+                        sig = evaluateProperty(_I, p)
+                        propSig.append(sig)
+                if typs[0] == Ot:
+                    _O = [[o] for o in O]
+                    for p in props:
+                        sig = evaluateProperty(_O, p)
+                        propSig.append(sig)
+            elif len(typs) == 2:
+                if typs[0] == It and typs[1] == Ot:
+                    for p in props:
+                        sig = evaluateProperty(zip(I, O), p)
+                        propSig.append(sig)
     return torch.tensor(propSig).float()
 
 def discrete_prediction(w, p):
@@ -249,7 +243,7 @@ def test():
         al, int2, [[1, 2, 3]], [0, 1, 2], llProps, Ms
     )
     assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == bustle(
-        al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0]
+        al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0], llProps
     )
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
   - [x] scaffold the blue lines
   - [x] settle on shapes for `s_io` and `s_vo`, the interfaces between `propertySignature` and `reweightWithModel`
   - [x] implement `propertySignature`
-  - [ ] support multiple inputs in `propertySignature`
+  - [x] support multiple inputs in `propertySignature`
   - [x] implement `reweightWithModel`
   - [x] consider reweighting for the initial values
   - [x] learn model
