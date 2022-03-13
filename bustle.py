@@ -116,7 +116,7 @@ def ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl):
         return expression(V)
     if not containsV(V, E, Vt):
         wp = w
-        s_vo = propertySignature([value(V)], (Vt,), O, Ot, llProps)
+        s_vo = propertySignature((value(V),), (Vt,), O, Ot, llProps)
         wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
         addE(dsl, E, wp, Vt, V)
     return None
