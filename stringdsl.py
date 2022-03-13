@@ -166,8 +166,8 @@ def test():
     assert ('Left', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["h", "w"], llProps, Ms)
     assert ('Right', [('input', 0), 1]) == bustle(sl, str2, [["hello", "world"]], ["o", "d"], llProps, Ms)
     assert ('Concatenate', [('input', 0), ('input', 1)]) == bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["helloyou", "worlddomination"])
-    assert ('Concatenate', [('input', 0), ('Concatenate', [' ', ('input', 1)])]) == bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["hello you", "world domination"], llProps, Ms)
-    assert ('Concatenate', [('Left', [('input', 0), 1]), ('Right', [('input', 0), 1])]) == bustle(sl, str2, [["hello", "world"]], ["ho", "wd"])
+    assert ('Concatenate', [('input', 0), ('Concatenate', [' ', ('input', 1)])]) == bustle(sl, str3, [["hello", "world"], ["you", "domination"]], ["hello you", "world domination"])
+    assert ('Concatenate', [('Left', [('input', 0), 1]), ('Right', [('input', 0), 1])]) == bustle(sl, str2, [["hello", "world", "domination"]], ["ho", "wd", "dn"])
 
 if __name__ == '__main__':
     print('running tests...')
