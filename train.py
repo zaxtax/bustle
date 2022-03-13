@@ -19,12 +19,15 @@ def initialModel(key):
         propertySignatureSize(It, Ot, llProps) +
         propertySignatureSize((Vt,), Ot, llProps)
     )
-    
+
+def saveModel(Ms):
+    torch.save(Ms, "models/rater_latest.pt")
+
 Ms = {}
 optimizers = {}
 loss = BCELoss()
 
-for epoch in tqdm(range(100)):
+for epoch in tqdm(range(10)):
     Ts = {}
     for i, sample in enumerate(dataset):
         pos, neg = sample
@@ -61,3 +64,4 @@ for epoch in tqdm(range(100)):
             optimizer.step()
             train_losses.append(loss_v.item())
     # print('loss', Ts)
+saveModel(Ms)

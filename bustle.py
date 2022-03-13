@@ -179,6 +179,16 @@ def propertySignature(Is, Its, O, Ot, llProps):
                         propSig.append(sig)
     return torch.tensor(propSig).float()
 
+
+def loadModel(src="models/latest.pt", llProps=None):
+    try:
+        Ms = torch.load(src)
+    except:
+        Ms = {(('int',), 'int', 'int'): Rater(
+            2*propertySignatureSize(('int',), 'int', llProps)
+        )}
+
+
 def discrete_prediction(w, p):
     if p < 0.1:
         d = 0
@@ -225,9 +235,7 @@ def test():
         ),
         (("bool", "int"), [lambda b, oup: (oup % 2 == 0) == b]),
     ]
-    Ms = {(('int',), 'int', 'int'): Rater(
-        2*propertySignatureSize(('int',), 'int', llProps)
-    )}
+    Ms = loadModel(llProps=llProps)
 
     int2 = ("int", ("int",))
     int3 = ("int", ("int", "int"))
