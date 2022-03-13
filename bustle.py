@@ -142,6 +142,7 @@ def evaluateProperty(I, prop):
 def propertySignatureSize(It, Ot, llProps):
     size = 0
     # FIXME: Only handle single input for now
+    assert len(It)==1
     It = It[0]
     for typs, props in llProps:
         if len(typs) == 1:
@@ -160,6 +161,8 @@ def propertySignature(I, It, O, Ot, llProps):
         return None
 
     # FIXME: Only handle single input for now
+    assert len(I)==1
+    assert len(It)==1
     I = I[0]
     It = It[0]
 
