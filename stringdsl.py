@@ -186,47 +186,55 @@ def test():
     from model import Rater, loadModel
     import torch
 
+    str2 = ("str", ("str",))
+    str3 = ("str", ("str", "str"))
+
     sl = StringDsl()
-    Ms = {
+    slx = StringDsl(True)
+    MsInit = {
         (("str",), "str", "str"): Rater(
             2 * propertySignatureSize(("str",), "str", llProps)
         )
     }
-    Ms = loadModel()
-    str2 = ("str", ("str",))
-    str3 = ("str", ("str", "str"))
-    assert ("Left", [("input", 0), 1]) == bustle(
-        sl, str2, [["hello", "world"]], ["h", "w"], llProps, Ms
-    )
-    assert ("Right", [("input", 0), 1]) == bustle(
-        sl, str2, [["hello", "world"]], ["o", "d"], llProps, Ms
-    )
-    assert ("Concatenate", [("input", 0), ("input", 1)]) == bustle(
-        sl,
-        str3,
-        [["hello", "world"], ["you", "domination"]],
-        ["helloyou", "worlddomination"],
-        llProps, Ms
-    )
-    assert (
-        "Concatenate",
-        [("input", 0), ("Concatenate", [" ", ("input", 1)])],
-    ) == bustle(
-        sl,
-        str3,
-        [["hello", "world"], ["you", "domination"]],
-        ["hello you", "world domination"],
-        llProps, Ms
-    )
-    assert (
-        # "Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])],
-        'Replace', [('input', 0), 1, ('Minus', [0, 2]), '']
-    ) == bustle(
-        sl, str2,
-        [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
-        llProps, Ms
-    )
+    MsTrained = loadModel()
 
+    for (desc, sl, llProps, Ms) in [
+            ('no ML', sl, None, None),
+            ('init ML', sl, llProps, MsInit),
+            ('trained ML', sl, llProps, MsTrained),
+            ('trained ML, extended DSL', slx, llProps, MsTrained)
+            ]:
+        print(desc)
+
+        assert ("Left", [("input", 0), 1]) == bustle(
+            sl, str2, [["hello", "world"]], ["h", "w"], llProps, Ms
+        )
+        assert ("Right", [("input", 0), 1]) == bustle(
+            sl, str2, [["hello", "world"]], ["o", "d"], llProps, Ms
+        )
+        assert ("Concatenate", [("input", 0), ("input", 1)]) == bustle(
+            sl, str3,
+            [["hello", "world"], ["you", "domination"]],
+            ["helloyou", "worlddomination"],
+            llProps, Ms
+        )
+        assert (
+            "Concatenate", [("input", 0), ("Concatenate", [" ", ("input", 1)])],
+        ) == bustle(
+            sl, str3,
+            [["hello", "world"], ["you", "domination"]],
+            ["hello you", "world domination"],
+            llProps, Ms
+        )
+        assert (
+            bustle(
+                sl, str2,
+                [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
+                llProps, Ms
+            ) in  [
+                ("Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])]),
+                ('Replace', [('input', 0), 1, ('Minus', [0, 2]), ''])
+            ])
 
 if __name__ == "__main__":
     print("running tests...")
