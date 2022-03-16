@@ -1,7 +1,7 @@
 from dsl import Dsl
 
 
-def StringDsl():
+def StringDsl(supportExtraConstants=False):
     # note: because we don't support overloading, we name
     # SubstituteI instead of overloading Substitute, and
     # FindI instead of overloading Find`
@@ -146,16 +146,20 @@ def StringDsl():
         return [(t, (c, [c for _ in range(N)])) for c in cs]
 
     def extractConstants(I, O, It, Ot):
+        extraConstants = []
+        if supportExtraConstants:
+            extraConstants = [
+                ",", ".", "!", "?", "(", ")", "|", "[", "]", "<", ">",
+                "{", "}", "-", "+", "_", "/", "$", "#", ":",";", "@","%", "O"
+            ]
         N = len(O)
         intVs = constantVs(N, "int", [0, 1, 2, 3, 99])
         strVs = constantVs(
             N,
             "str",
             [
-                " ",
-                "", " ", ",", ".", "!", "?", "(", ")", "|", "[", "]", "<", ">",
-                "{", "}", "-", "+", "_", "/", "$", "#", ":",";", "@","%", "O"
-            ],
+                " ", ""
+            ] + extraConstants
         )
         # TODO: string constants extracted from I/O examples
         return intVs + strVs
