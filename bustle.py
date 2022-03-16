@@ -1,8 +1,5 @@
 import torch
 
-from model import Rater
-
-
 def executeV(dsl, op, args):
     arg_exps = [e for e, x in args]
     arg_vals = [x for e, x in args]
@@ -186,19 +183,6 @@ def propertySignature(Is, Its, O, Ot, llProps):
                         propSig.append(sig)
     return torch.tensor(propSig).float()
 
-
-def loadModel(src="models/rater_latest.pt", llProps=None):
-    try:
-        Ms = torch.load(src)
-    except FileNotFoundError:
-        print(f"warning: file {src} was not found")
-        Ms = {
-            (("int",), "int", "int"): Rater(
-                2 * propertySignatureSize(("int",), "int", llProps)
-            )
-        }
-
-
 def discrete_prediction(w, p):
     if p < 0.1:
         d = 0
@@ -236,6 +220,7 @@ def reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w):
 
 def test():
     from arithdsl import ArithDsl
+    from model import Rater, loadModel
 
     al = ArithDsl()
     llProps = [
@@ -247,8 +232,12 @@ def test():
         ),
         (("bool", "int"), [lambda b, oup: (oup % 2 == 0) == b]),
     ]
-    Ms = loadModel(llProps=llProps)
-
+    Ms = {
+        (("int",), "int", "int"): Rater(
+            2 * propertySignatureSize(("int",), "int", llProps)
+        )
+    }
+    #Ms = loadModel()
     int2 = ("int", ("int",))
     int3 = ("int", ("int", "int"))
     assert 1 == bustle(al, int2, [[1, 2, 3]], [1, 1, 1], llProps, Ms)

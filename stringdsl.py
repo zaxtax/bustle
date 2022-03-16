@@ -152,11 +152,9 @@ def StringDsl():
             N,
             "str",
             [
-                " "
-                # TODO: that many constants seem to cause hanging
-                #       will the ML help include them?
-                # "", " ", ",", ".", "!", "?", "(", ")", "|", "[", "]", "<", ">",
-                # "{", "}", "-", "+", "_", "/", "$", "#", ":",";", "@","%", "O"
+                " ",
+                "", " ", ",", ".", "!", "?", "(", ")", "|", "[", "]", "<", ">",
+                "{", "}", "-", "+", "_", "/", "$", "#", ":",";", "@","%", "O"
             ],
         )
         # TODO: string constants extracted from I/O examples
@@ -181,7 +179,8 @@ stringdsl = StringDsl()
 def test():
     from bustle import bustle, propertySignatureSize
     from stringprops import llProps
-    from model import Rater
+    from model import Rater, loadModel
+    import torch
 
     sl = StringDsl()
     Ms = {
@@ -189,6 +188,7 @@ def test():
             2 * propertySignatureSize(("str",), "str", llProps)
         )
     }
+    Ms = loadModel()
     str2 = ("str", ("str",))
     str3 = ("str", ("str", "str"))
     assert ("Left", [("input", 0), 1]) == bustle(
@@ -202,6 +202,7 @@ def test():
         str3,
         [["hello", "world"], ["you", "domination"]],
         ["helloyou", "worlddomination"],
+        llProps, Ms
     )
     assert (
         "Concatenate",
@@ -211,11 +212,16 @@ def test():
         str3,
         [["hello", "world"], ["you", "domination"]],
         ["hello you", "world domination"],
+        llProps, Ms
     )
     assert (
-        "Concatenate",
-        [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])],
-    ) == bustle(sl, str2, [["hello", "world", "domination"]], ["ho", "wd", "dn"])
+        # "Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])],
+        'Replace', [('input', 0), 1, ('Minus', [0, 2]), '']
+    ) == bustle(
+        sl, str2,
+        [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
+        llProps, Ms
+    )
 
 
 if __name__ == "__main__":

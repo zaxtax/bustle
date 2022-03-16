@@ -22,3 +22,6 @@ class Rater(nn.Module):
         y_pred = self.output_fc(h_2)
         y_prob = self.output_prob(y_pred)
         return y_prob
+
+def loadModel(src="models/rater_latest.pt"):
+    return torch.load(src)
