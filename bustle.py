@@ -84,7 +84,7 @@ def initialVs(dsl, I, O, It, Ot):
 #   type signature typeSig
 #   property list of typed lists of functions llProps
 #   models Ms, a dictionary keyed by types of (input, output, intermediary)
-def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100):
+def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, print_stats=False):
     Ot, It = typeSig
     s_io = propertySignature(I, It, O, Ot, llProps)
 
@@ -95,6 +95,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100):
         if r is not None:
             return r
 
+    stats = 0
     for w in range(2, N):
         set_empty_e_if_none(dsl, E, w)
         for op in dsl.Ops:
@@ -105,8 +106,11 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100):
                 except:
                     # ignore expressions that cause errors
                     continue
+                stats += 1
                 r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
                 if r is not None:
+                    if print_stats:
+                        print(stats)
                     return r
 
     return E  # for debugging

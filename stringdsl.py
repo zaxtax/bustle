@@ -206,31 +206,36 @@ def test():
             ]:
         print(desc)
 
+        print("test 1: ", end='')
         assert ("Left", [("input", 0), 1]) == bustle(
-            sl, str2, [["hello", "world"]], ["h", "w"], llProps, Ms
+            sl, str2, [["hello", "world"]], ["h", "w"], llProps, Ms, print_stats=True
         )
+        print("test 2: ", end='')
         assert ("Right", [("input", 0), 1]) == bustle(
-            sl, str2, [["hello", "world"]], ["o", "d"], llProps, Ms
+            sl, str2, [["hello", "world"]], ["o", "d"], llProps, Ms, print_stats=True
         )
+        print("test 3: ", end='')
         assert ("Concatenate", [("input", 0), ("input", 1)]) == bustle(
             sl, str3,
             [["hello", "world"], ["you", "domination"]],
             ["helloyou", "worlddomination"],
-            llProps, Ms
+            llProps, Ms, print_stats=True
         )
+        print("test 4: ", end='')
         assert (
             "Concatenate", [("input", 0), ("Concatenate", [" ", ("input", 1)])],
         ) == bustle(
             sl, str3,
             [["hello", "world"], ["you", "domination"]],
             ["hello you", "world domination"],
-            llProps, Ms
+            llProps, Ms, print_stats=True
         )
+        print("test 5: ", end='')
         assert (
             bustle(
                 sl, str2,
                 [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
-                llProps, Ms
+                llProps, Ms, print_stats=True
             ) in  [
                 ("Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])]),
                 ('Replace', [('input', 0), 1, ('Minus', [0, 2]), ''])
