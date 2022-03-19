@@ -46,3 +46,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 - [x] build a (DSL-parameterized) program executor
 - [ ] improve the DSL interface so that implementations of DSLs are more concise?
 - [ ] use a proper Python testing framework?
+- [ ] Save model in a reproduceable way.
+  - [ ] to get the git id: `subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode('ascii').strip()`
+  - [ ] add a timestamp
+  - [ ] add a symlink
