@@ -5,7 +5,6 @@ import itertools
 import random
 import string
 
-
 def subexpressions(exp):
     r = []
     r += [exp]
@@ -28,6 +27,9 @@ def handle_expression(exp, search, dsl, inp):
 
 def select_expression(search, dsl, inp):
     sample = random.choice(search)
+    return build_sample(sample, search, dsl, inp)
+
+def build_sample(sample, search, dsl, inp):
     exp = sample[0]
     o = sample[1]
     (pos, neg) = handle_expression(exp, search, dsl, inp)
@@ -55,13 +57,15 @@ def generate_input(N=3, LB=5, UB=8):
 
 def generate_dataset(dsl=stringdsl):
     data = []
-    N = 5
-    N_search = 10
-    N_selected = 10
+    N = 7
+    N_search = 5
+    N_selected = 1000
     for i in range(N_search):
         inp = generate_input()
         search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N)
         search = [v for i in range(2, N) for v in search[i]["str"]]
         for j in range(N_selected):
             data.append(select_expression(search, dsl, inp))
+        #for sample in search:
+        #    data.append(build_sample(sample, search, dsl, inp))
     return data

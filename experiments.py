@@ -14,7 +14,7 @@ WITH_ML = flags.DEFINE_boolean('ml', True, 'use ML')
 
 def main(_):
     with_ml = WITH_ML.value
-    sl = StringDsl(fewOps=True)
+    sl = StringDsl()
     #prog = stringprogs.stringprogs[1]
     #prog = 'IF(EXACT(LEFT(var_0, 1), "-"), var_0, CONCATENATE("+", var_0))'
     prog = 'CONCATENATE("+", var_0)'
@@ -22,9 +22,11 @@ def main(_):
     prog = 'IF(EXACT(var_0, "-"), "-", "+")'
     prog = 'IF(EXACT(var_0, "-"), var_0, CONCATENATE("+", var_0))'
     prog = 'IF(EXACT(LEFT(var_0, 1), "-"), var_0, CONCATENATE("+", var_0))'
+    #prog = 'Concatenate(Left("+", Minus(0, Find("-", var_0))), var_0)'
+    #prog = 'Concatenate(Replace("+", Find("-", var_0), 1, ""), var_0)'
     ast = parse(sl, prog)
     #I = [stringprog.input]
-    I = [["1", "2.0", "hello", "-1", "-1.0", "-"]]
+    I = [["1", "2.0", "hello", "-1", "-1.0", "-", "hello-you"]]
     O = sl.evalIO(ast, I)
     str2 = ("str", ("str",))
     MsInit = {
