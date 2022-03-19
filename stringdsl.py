@@ -1,11 +1,41 @@
 from dsl import Dsl
 
 
-def StringDsl(supportExtraConstants=False):
+def StringDsl(supportExtraConstants=False, fewOps=False):
     # note: because we don't support overloading, we name
     # SubstituteI instead of overloading Substitute, and
     # FindI instead of overloading Find`
-    Ops = [
+    if fewOps:
+        Ops = [
+        "Concatenate",
+        "Left",
+        "Right",
+        #"Mid",
+        #"Replace",
+        #"Trim",
+        #"Repeat",
+        #"Substitute",
+        #"SubstituteI",
+        #"To_Text",
+        #"Lower",
+        #"Upper",
+        #"Proper",
+        "If",
+        #"Add",
+        #"Minus",
+        #"Divide",
+        #"Find",
+        #"FindI",
+        #"Len",
+        "Exact",
+        #"Equals",
+        #"GT",
+        #"GE",
+        #"IsNumber",
+        #"Value",
+        ]
+    else:
+        Ops = [
         "Concatenate",
         "Left",
         "Right",
@@ -32,7 +62,8 @@ def StringDsl(supportExtraConstants=False):
         "GE",
         "IsNumber",
         "Value",
-    ]
+        ]
+
     Types = ["str", "int", "bool"]
 
     def execute(op, x):
