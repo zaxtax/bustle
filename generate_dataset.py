@@ -58,8 +58,8 @@ def generate_input(N=3, LB=5, UB=8):
 def generate_dataset(dsl=stringdsl):
     data = []
     N = 7
-    N_search = 5
-    N_selected = 1000
+    N_search = 1#1000
+    N_selected = 1000#100
     for i in range(N_search):
         inp = generate_input()
         search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N)
