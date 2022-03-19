@@ -22,16 +22,29 @@ def initialModel(key):
         + propertySignatureSize((Vt,), Ot, llProps)
     )
 
+import shutil
+import subprocess
+import datetime
 
 def saveModel(Ms):
-    torch.save(Ms, "models/rater_latest.pt")
+    git_id = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode('ascii').strip()
+
+    dt = datetime.datetime.now()
+    timestamp = dt.strftime('%Y-%m-%dT%H:%M')
+
+    key = timestamp + '-' + git_id
+
+    fn_key = "models/rater_%s.pt"
+    fn = fn_key % key
+    torch.save(Ms, fn)
+    shutil.copy(fn, fn_key % 'latest')
 
 
 Ms = {}
 optimizers = {}
 loss = BCELoss()
 
-for epoch in tqdm(range(10)):
+for epoch in tqdm(range(20)):
     Ts = {}
     for i, sample in enumerate(dataset):
         pos, neg = sample

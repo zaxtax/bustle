@@ -6,8 +6,8 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 ### Paper
 
 - [x] [`bustle`](bustle.py) implement basic bottom-up synthesis (Algorithm 1 without blue lines)
-  - [ ] bug fix: check that `Vt` is correctly wrapped when passed to `propertySignature`
-  - [ ] think carefully about error handling and program synthesis: can the program make assumptions about inputs? how can we handle `IF(ISNUMBER(X), VALUE(x), 0)`? this requires a sub-expression failing on the whole, but not on the selected cases.
+  - [x] bug fix: check that `Vt` is correctly wrapped when passed to `propertySignature`
+  - [ ] think carefully about error handling and program synthesis: can the program make assumptions about inputs? how can we handle `IF(ISNUMBER(X), VALUE(x), 0)`? this requires a sub-expression failing on the whole, but not on the selected cases. Maybe we shouldn't be discarding errors, but have an error signal.
 - [x] test implementation on tiny arithmetic language
 - [x] add types to DSL operations and extend tiny arithmetic language with boolean types and `if` operation
 - [x] allow multiple DSLs
@@ -28,6 +28,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
   - [x] use trained model
     - [ ] make sure the trained model works as expected with multiple inputs
   - [ ] add a validation loss checker (implement early stopping)
+  - [ ] try a big run!
 - [x] record some metrics (e.g. the number of subexpressions evaluated) during synthesis to compare approaches
     - [ ] trained ML seems to require _more_ subexpressions evaluated!
 - [x] re-add the initial string constants and see whether the test cases pass with the ML
@@ -46,7 +47,4 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 - [x] build a (DSL-parameterized) program executor
 - [ ] improve the DSL interface so that implementations of DSLs are more concise?
 - [ ] use a proper Python testing framework?
-- [ ] Save model in a reproduceable way.
-  - [ ] to get the git id: `subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode('ascii').strip()`
-  - [ ] add a timestamp
-  - [ ] add a symlink
+- [x] save model in a reproduceable way
