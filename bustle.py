@@ -107,6 +107,8 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, print_stats=False):
                     # ignore expressions that cause errors
                     continue
                 stats += 1
+                if print_stats and stats % 1000 == 0:
+                    print('.', end='', flush=True)
                 r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
                 if r is not None:
                     if print_stats:

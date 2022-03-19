@@ -1,5 +1,6 @@
 from bustle import bustle
 from stringdsl import stringdsl
+import stringprogs
 import itertools
 import random
 import string
@@ -35,7 +36,7 @@ def select_expression(search, dsl, inp):
 
 typ = ("str", ("str",))
 # charset = string.printable[:-6]
-charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ,.-/"
+charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ,.-+/"
 
 
 def generate_input(N=3, LB=5, UB=8):
@@ -48,6 +49,7 @@ def generate_input(N=3, LB=5, UB=8):
     inp = []
     for i in [random.randint(LB, UB) for _ in range(N)]:
         inp.append("".join([random.choice(charset) for _ in range(i)]))
+    inp = inp + stringprogs.input
     return [inp]
 
 

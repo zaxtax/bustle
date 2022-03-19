@@ -27,6 +27,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
   - [x] learn model
   - [x] use trained model
     - [ ] make sure the trained model works as expected with multiple inputs
+  - [ ] add a validation loss checker
 - [x] record some metrics (e.g. the number of subexpressions evaluated) during synthesis to compare approaches
     - [ ] trained ML seems to require _more_ subexpressions evaluated!
 - [x] re-add the initial string constants and see whether the test cases pass with the ML

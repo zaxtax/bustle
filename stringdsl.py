@@ -158,7 +158,9 @@ def StringDsl(supportExtraConstants=False):
             N,
             "str",
             [
-                " ", ""
+                " ", "",
+                # manually added:
+                "-", "+",
             ] + extraConstants
         )
         # TODO: string constants extracted from I/O examples
