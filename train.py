@@ -44,9 +44,10 @@ Ms = {}
 optimizers = {}
 loss = BCELoss()
 
-for epoch in tqdm(range(10)):
+for epoch in range(10):
+    print("epoch ", epoch + 1)
     Ts = {}
-    for i, sample in enumerate(dataset):
+    for i, sample in tqdm(enumerate(dataset)):
         pos, neg = sample
 
         for (ex, valence) in ((pos, 1), (neg, 0)):
@@ -80,5 +81,4 @@ for epoch in tqdm(range(10)):
             loss_v.backward()
             optimizer.step()
             train_losses.append(loss_v.item())
-    # print('loss', Ts)
-saveModel(Ms)
+    saveModel(Ms)
