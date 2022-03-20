@@ -47,7 +47,7 @@ loss = BCELoss()
 for epoch in range(10):
     print("epoch ", epoch + 1)
     Ts = {}
-    for i, sample in tqdm(enumerate(dataset)):
+    for i, sample in enumerate(tqdm(dataset)):
         pos, neg = sample
 
         for (ex, valence) in ((pos, 1), (neg, 0)):
