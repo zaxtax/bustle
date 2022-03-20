@@ -44,7 +44,7 @@ Ms = {}
 optimizers = {}
 loss = BCELoss()
 
-for epoch in tqdm(range(20)):
+for epoch in tqdm(range(10)):
     Ts = {}
     for i, sample in enumerate(dataset):
         pos, neg = sample
