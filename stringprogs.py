@@ -142,6 +142,7 @@ input = [
     "<COMPANY>, inc",
     "NONE",
     "Github",
+    "1", "2.0", "hello", "-1", "-1.0", "-", "hello-you"
 ]
 
 

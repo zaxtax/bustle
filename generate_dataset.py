@@ -15,24 +15,24 @@ def subexpressions(exp):
     return r
 
 
-def handle_expression(exp, search, dsl, inp):
+def handle_expression(exp, all_search, search, dsl, inp):
     es = subexpressions(exp)
     pos_exp = random.choice(es)
     pos = dsl.evalIO(pos_exp, inp)
-    neg = random.choice(search)
+    neg = random.choice(all_search)
     while neg[0] in es:
-        neg = random.choice(search)
+        neg = random.choice(all_search)
     return (pos, neg[1])
 
 
-def select_expression(search, dsl, inp):
+def select_expression(all_search, search, dsl, inp):
     sample = random.choice(search)
-    return build_sample(sample, search, dsl, inp)
+    return build_sample(sample, all_search, search, dsl, inp)
 
-def build_sample(sample, search, dsl, inp):
+def build_sample(sample, all_search, search, dsl, inp):
     exp = sample[0]
     o = sample[1]
-    (pos, neg) = handle_expression(exp, search, dsl, inp)
+    (pos, neg) = handle_expression(exp, all_search, search, dsl, inp)
     return ((inp, pos, o), (inp, neg, o))
 
 
@@ -61,7 +61,7 @@ def generate_dataset():
 def generate_dataset_cheat():
     from dslparser import parse
     dsl = stringdsl
-    progs = [parse(dsl,prog) for prog in stringprogs.stringprogs]
+    progs = [parse(dsl,prog) for prog in [stringprogs.stringprogs[1]]]
     progs1 = [prog for prog in progs if dsl.numInputs(prog) == 1]
     exps = itertools.chain(*(subexpressions(prog) for prog in progs1))
 
@@ -70,17 +70,20 @@ def generate_dataset_cheat():
     N_selected = 1000
     data = []
     for i in range(N_search):
-        inp = generate_input()
-        search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N)
-        search = [v for i in range(2, N) for v in search[i]["str"]]
+        inp = [stringprogs.input]
+        all_search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N)
+        search = [v for i in range(2, N) for v in all_search[i]["str"]]
+        search_bool = [v for i in range(2, N) for v in all_search[i]["bool"]]
+        search_int = [v for i in range(2, N) for v in all_search[i]["int"]]
+        all_search = search + search_bool + search_int
         samples = [(e, dsl.evalIO(e, inp)) for e in exps]
         samples = [(e,o) for (e,o) in samples if type(o[0]) is str]
         for sample in samples:
-            for i in range(10):
-                data.append(build_sample(sample, search, dsl, inp))
-        for j in range(N_selected):
-            data.append(select_expression(search, dsl, inp))
-
+            for i in range(1000):
+                data.append(build_sample(sample, all_search, search, dsl, inp))
+        #for j in range(N_selected):
+        #    data.append(select_expression(search, dsl, inp))
+    random.shuffle(data)
     return data
 
 

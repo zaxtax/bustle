@@ -18,7 +18,7 @@ def main(_):
     
     str2 = ("str", ("str",))
     
-    for prog in stringprogs.stringprogs:
+    for prog in stringprogs.stringprogs[1:]:
         ast = parse(sl, prog)
         if sl.numInputs(ast)>1:
             continue
