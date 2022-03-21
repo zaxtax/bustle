@@ -72,7 +72,7 @@ def generate_dataset_cheat():
     dsl = stringdsl
     progs = [parse(dsl,prog) for prog in stringprogs.stringprogs]
     progs1 = [prog for prog in progs if dsl.numInputs(prog) == 1]
-    exps = itertools.chain(*(subexpressions(prog) for prog in progs1))
+    exps = list(itertools.chain(*(subexpressions(prog) for prog in progs1)))
 
     N = 7
     N_search = 5
