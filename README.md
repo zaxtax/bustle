@@ -41,6 +41,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
   - [ ] [SysGus](https://github.com/SyGuS-Org/benchmarks)
 - [x] generate data from synthesis search (last paragraph of Section 3.1)
   - [ ] generate interesting inputs
+  - [ ] persist the data generation
 
 ### Best practices
 
