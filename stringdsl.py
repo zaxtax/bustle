@@ -184,6 +184,9 @@ class StringDsl(Dsl):
     def constantVs(self, N, t, cs):
         return [(t, (c, [c for _ in range(N)])) for c in cs]
 
+    def constantIn(self, c, O):
+        return any(c in o for o in O)
+
     def extractConstants(self, I, O, It, Ot):
         extraConstants = []
         if self.supportExtraConstants:
@@ -196,7 +199,7 @@ class StringDsl(Dsl):
         strVs = self.constantVs(
             N,
             "str",
-            [" "] + self.progConstants + extraConstants
+            [" "] + [c for c in self.progConstants if self.constantIn(c, O)] + extraConstants
             #[" "] + extraConstants
         )
         # TODO: string constants extracted from I/O examples
