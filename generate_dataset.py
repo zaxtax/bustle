@@ -84,6 +84,7 @@ def generate_dataset_cheat():
         search, all_search = run_bustle(dsl, typ, inp, N)
         samples = [(e, dsl.evalIO(e, inp)) for e in exps]
         samples = [(e,o) for (e,o) in samples if type(o[0]) is str]
+        print('')
         print('SAMPLES')
         for sample in samples:
             print('.', end='', flush=True)

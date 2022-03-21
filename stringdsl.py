@@ -72,6 +72,7 @@ class StringDsl(Dsl):
         self.supportExtraConstants = supportExtraConstants
         super().__init__()
         self.progConstants = self.extractAllConstantStrings(progs)
+        print(self.progConstants)
 
     def execute(self, op, x):
         if op == "Concatenate":
@@ -195,7 +196,8 @@ class StringDsl(Dsl):
         strVs = self.constantVs(
             N,
             "str",
-            ["", " ", "+", "-",] + self.progConstants + extraConstants
+            [" "] + self.progConstants + extraConstants
+            #[" "] + extraConstants
         )
         # TODO: string constants extracted from I/O examples
         return intVs + strVs
