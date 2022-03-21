@@ -184,7 +184,6 @@ class StringDsl(Dsl):
         return [(t, (c, [c for _ in range(N)])) for c in cs]
 
     def extractConstants(self, I, O, It, Ot):
-        import stringprogs
         extraConstants = []
         if self.supportExtraConstants:
             extraConstants = [

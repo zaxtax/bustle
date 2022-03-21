@@ -55,7 +55,7 @@ def generate_input(N=3, LB=5, UB=8):
     return [inp]
 
 def run_bustle(dsl, typ, inp, N):
-    all_search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N)
+    all_search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N, print_stats=True)
     search = [v for i in range(2, N) for v in all_search[i]["str"]]
     search_bool = [v for i in range(2, N) for v in all_search[i]["bool"]]
     search_int = [v for i in range(2, N) for v in all_search[i]["int"]]
@@ -80,10 +80,13 @@ def generate_dataset_cheat():
     data = []
     for i in range(N_search):
         inp = [stringprogs.input]
+        print('BUSTLE')
         search, all_search = run_bustle(dsl, typ, inp, N)
         samples = [(e, dsl.evalIO(e, inp)) for e in exps]
         samples = [(e,o) for (e,o) in samples if type(o[0]) is str]
+        print('SAMPLES')
         for sample in samples:
+            print('.', end='', flush=True)
             for i in range(1000):
                 data.append(build_sample(sample, all_search, search, dsl, inp))
         #for j in range(N_selected):
