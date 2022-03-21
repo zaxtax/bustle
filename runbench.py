@@ -1,5 +1,5 @@
 from dslparser import parse, printer
-from stringdsl import StringDsl
+from stringdsl import stringdsl
 from bustle import bustle, propertySignatureSize
 import stringprogs
 from stringprops import llProps
