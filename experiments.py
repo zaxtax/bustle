@@ -1,5 +1,5 @@
 from dslparser import parse, printer
-from stringdsl import StringDsl
+from stringdsl import stringdsl
 from bustle import bustle, propertySignatureSize
 import stringprogs
 from stringprops import llProps
@@ -14,7 +14,7 @@ WITH_ML = flags.DEFINE_boolean('ml', True, 'use ML')
 
 def main(_):
     with_ml = WITH_ML.value
-    sl = StringDsl()
+    sl = stringdsl
     #prog = stringprogs.stringprogs[1]
     #prog = 'IF(EXACT(LEFT(var_0, 1), "-"), var_0, CONCATENATE("+", var_0))'
     prog = 'CONCATENATE("+", var_0)'
