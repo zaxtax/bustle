@@ -202,7 +202,10 @@ class StringDsl(Dsl):
         strVs = self.constantVs(
             N,
             "str",
-            [" "] + [c for c in self.progConstants if self.constantMissing(c, O, I[0]) or self.constantMissing(c, I[0], O)] + extraConstants
+            [" "] +
+            self.progConstants +
+            #[c for c in self.progConstants if self.constantMissing(c, O, I[0]) or self.constantMissing(c, I[0], O)] +
+            extraConstants
             #[" "] + extraConstants
         )
         # TODO: string constants extracted from I/O examples
