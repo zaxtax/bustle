@@ -214,7 +214,7 @@ class StringDsl(Dsl):
             return []
     def extractAllConstantStrings(self, xs):
         from dslparser import parse
-        r = itertools.chain(*(self.extractConstantStrings(parse(self, x)) for x in xs))
+        r = itertools.chain(*(self.extractConstantStrings(parse(self, x)) for x in xs if self.numInputs(parse(self, x)) == 1))
         return list(set(r))
 
     def inferType(self, v):
