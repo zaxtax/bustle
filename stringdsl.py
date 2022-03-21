@@ -188,7 +188,7 @@ class StringDsl(Dsl):
         return any(c in o for o in O)
 
     def constantMissing(self, c, I, O):
-        return any((c in i) and (c not in o) for i,o in zip(I[0], O))
+        return any((c in i) and (c not in o) for i,o in zip(I, O))
 
     def extractConstants(self, I, O, It, Ot):
         extraConstants = []
@@ -202,7 +202,7 @@ class StringDsl(Dsl):
         strVs = self.constantVs(
             N,
             "str",
-            [" "] + [c for c in self.progConstants if self.constantIn(c, O) or self.constantMissing(c, I, O)] + extraConstants
+            [" "] + [c for c in self.progConstants if self.constantMissing(c, O, I[0]) or self.constantMissing(c, I[0], O)] + extraConstants
             #[" "] + extraConstants
         )
         # TODO: string constants extracted from I/O examples
