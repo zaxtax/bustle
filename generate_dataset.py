@@ -75,11 +75,12 @@ def generate_dataset_cheat():
     exps = itertools.chain(*(subexpressions(prog) for prog in progs1))
 
     N = 7
-    N_search = 1
+    N_search = 5
     N_selected = 1000
     data = []
     for i in range(N_search):
         inp = [stringprogs.input]
+        print('')
         print('BUSTLE')
         search, all_search = run_bustle(dsl, typ, inp, N)
         samples = [(e, dsl.evalIO(e, inp)) for e in exps]
