@@ -1,72 +1,79 @@
+import itertools
 from dsl import Dsl
 
 
-def StringDsl(supportExtraConstants=False, fewOps=False):
-    # note: because we don't support overloading, we name
-    # SubstituteI instead of overloading Substitute, and
-    # FindI instead of overloading Find`
-    if fewOps:
-        Ops = [
-        "Concatenate",
-        "Left",
-        "Right",
-        #"Mid",
-        #"Replace",
-        #"Trim",
-        #"Repeat",
-        #"Substitute",
-        #"SubstituteI",
-        #"To_Text",
-        #"Lower",
-        #"Upper",
-        #"Proper",
-        "If",
-        #"Add",
-        #"Minus",
-        #"Divide",
-        #"Find",
-        #"FindI",
-        #"Len",
-        "Exact",
-        #"Equals",
-        #"GT",
-        #"GE",
-        #"IsNumber",
-        #"Value",
+class StringDsl(Dsl):
+    def __init__(self, supportExtraConstants=False, fewOps=False, progs=[]):
+
+        # note: because we don't support overloading, we name
+        # SubstituteI instead of overloading Substitute, and
+        # FindI instead of overloading Find`
+        FewOps = [
+            "Concatenate",
+            "Left",
+            "Right",
+            #"Mid",
+            #"Replace",
+            #"Trim",
+            #"Repeat",
+            #"Substitute",
+            #"SubstituteI",
+            #"To_Text",
+            #"Lower",
+            #"Upper",
+            #"Proper",
+            "If",
+            #"Add",
+            #"Minus",
+            #"Divide",
+            #"Find",
+            #"FindI",
+            #"Len",
+            "Exact",
+            #"Equals",
+            #"GT",
+            #"GE",
+            #"IsNumber",
+            #"Value",
         ]
-    else:
         Ops = [
-        "Concatenate",
-        "Left",
-        "Right",
-        "Mid",
-        "Replace",
-        "Trim",
-        "Repeat",
-        "Substitute",
-        "SubstituteI",
-        "To_Text",
-        "Lower",
-        "Upper",
-        "Proper",
-        "If",
-        "Add",
-        "Minus",
-        "Divide",
-        "Find",
-        "FindI",
-        "Len",
-        "Exact",
-        "Equals",
-        "GT",
-        "GE",
-        "IsNumber",
-        "Value",
+            "Concatenate",
+            "Left",
+            "Right",
+            "Mid",
+            "Replace",
+            "Trim",
+            "Repeat",
+            "Substitute",
+            "SubstituteI",
+            "To_Text",
+            "Lower",
+            "Upper",
+            "Proper",
+            "If",
+            "Add",
+            "Minus",
+            "Divide",
+            "Find",
+            "FindI",
+            "Len",
+            "Exact",
+            "Equals",
+            "GT",
+            "GE",
+            "IsNumber",
+            "Value",
         ]
 
-    Types = ["str", "int", "bool"]
+        Types = ["str", "int", "bool"]
 
-    def execute(op, x):
+        self.Ops = FewOps if fewOps else Ops
+        self.Types = Types
+        self.supportExtraConstants = supportExtraConstants
+        super().__init__()
+        self.progConstants = self.extractAllConstantStrings(progs)
+
+    def execute(self, op, x):
         if op == "Concatenate":
             return x[0] + x[1]
         elif op == "Left":
@@ -127,7 +134,7 @@ def StringDsl(supportExtraConstants=False, fewOps=False):
         else:
             assert False
 
-    def types(op):
+    def types(self, op):
         s = "str"
         i = "int"
         b = "bool"
@@ -173,31 +180,42 @@ def StringDsl(supportExtraConstants=False, fewOps=False):
         else:
             assert False, "op %s is undefined in types" % op
 
-    def constantVs(N, t, cs):
+    def constantVs(self, N, t, cs):
         return [(t, (c, [c for _ in range(N)])) for c in cs]
 
-    def extractConstants(I, O, It, Ot):
+    def extractConstants(self, I, O, It, Ot):
+        import stringprogs
         extraConstants = []
-        if supportExtraConstants:
+        if self.supportExtraConstants:
             extraConstants = [
                 ",", ".", "!", "?", "(", ")", "|", "[", "]", "<", ">",
                 "{", "}", "-", "+", "_", "/", "$", "#", ":",";", "@","%", "O"
             ]
         N = len(O)
-        intVs = constantVs(N, "int", [0, 1, 2, 3, 99])
-        strVs = constantVs(
+        intVs = self.constantVs(N, "int", [0, 1, 2, 3, 99])
+        strVs = self.constantVs(
             N,
             "str",
-            [
-                " ", "",
-                # manually added:
-                "-", "+",
-            ] + extraConstants
+            ["", " ", "+", "-",] + self.progConstants + extraConstants
         )
         # TODO: string constants extracted from I/O examples
         return intVs + strVs
 
-    def inferType(v):
+    def extractConstantStrings(self, x):
+        if type(x) is tuple or type(x) is list:
+            if x[0] == "input":
+                return []
+            else:
+                return itertools.chain(*(self.extractConstantStrings(e) for e in x[1]))
+        elif type(x) is str:
+            return [x]
+        else:
+            return []
+    def extractAllConstantStrings(self, xs):
+        r = itertools.chain(*(extractConstantStrings(parse(self, x)) for x in xs))
+        return list(set(r))
+
+    def inferType(self, v):
         if type(v) is str:
             return "str"
         elif type(v) is int:
@@ -207,11 +225,7 @@ def StringDsl(supportExtraConstants=False, fewOps=False):
         else:
             assert False
 
-    return Dsl(Ops, Types, execute, types, extractConstants, inferType)
-
-
 stringdsl = StringDsl()
-
 
 def test():
     from bustle import bustle, propertySignatureSize

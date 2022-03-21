@@ -1,11 +1,16 @@
 from dsl import Dsl
 
 
-def ArithDsl():
-    Ops = ["add", "mul", "div", "neg", "lt", "if"]
-    Types = ["int", "bool"]
+class ArithDsl(Dsl):
+    def __init__(self):
+        Ops = ["add", "mul", "div", "neg", "lt", "if"]
+        Types = ["int", "bool"]
 
-    def execute(op, args):
+        self.Ops = Ops
+        self.Types = Types
+        super().__init__()
+
+    def execute(self, op, args):
         if op == "add":
             return args[0] + args[1]
         elif op == "mul":
@@ -21,7 +26,7 @@ def ArithDsl():
         else:
             assert False
 
-    def types(op):
+    def types(self, op):
         if op in ["neg"]:
             return ("int", ("int",))
         elif op in ["add", "mul", "div"]:
@@ -33,16 +38,14 @@ def ArithDsl():
         else:
             assert False
 
-    def extractConstants(I, O, It, Ot):
+    def extractConstants(self, I, O, It, Ot):
         cs = [0, 1]
         return [("int", (c, [c for _ in range(len(O))])) for c in cs]
 
-    def inferType(v):
+    def inferType(self, v):
         if type(v) is int:
             return "int"
         elif type(v) is bool:
             return "bool"
         else:
             assert False
-
-    return Dsl(Ops, Types, execute, types, extractConstants, inferType)

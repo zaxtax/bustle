@@ -4,17 +4,9 @@ def makeOpCache(Ops):
         cache[op.lower()] = op
     return cache
 
-
 class Dsl:
-    def __init__(self, Ops, Types, execute, types, extractConstants, inferType):
-        self.Ops = Ops
-        self.Types = Types
-        self.execute = execute
-        self.types = types
-        self.extractConstants = extractConstants
-        self.inferType = inferType
-
-        self.opCache = makeOpCache(Ops)
+    def __init__(self):
+        self.opCache = makeOpCache(self.Ops)
 
     def eval(self, x, inp):
         if type(x) is tuple or type(x) is list:
