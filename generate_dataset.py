@@ -75,7 +75,7 @@ def generate_dataset_cheat():
     exps = itertools.chain(*(subexpressions(prog) for prog in progs1))
 
     N = 7
-    N_search = 5
+    N_search = 1
     N_selected = 1000
     data = []
     for i in range(N_search):
@@ -87,7 +87,7 @@ def generate_dataset_cheat():
         print('SAMPLES')
         for sample in samples:
             print('.', end='', flush=True)
-            for i in range(1000):
+            for i in range(N_selected):
                 data.append(build_sample(sample, all_search, search, dsl, inp))
         #for j in range(N_selected):
         #    data.append(select_expression(search, dsl, inp))
