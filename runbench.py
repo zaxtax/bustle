@@ -13,6 +13,7 @@ from absl import logging
 def main(_):
     sl = StringDsl()
     I = stringprogs.all_inputs(1)
+    #I = [["1", "2.0", "hello", "-1", "-1.0", "-", "hello-you"]]
     Ms = loadModel()
     
     str2 = ("str", ("str",))

@@ -25,7 +25,7 @@ def main(_):
     #prog = 'Concatenate(Left("+", Minus(0, Find("-", var_0))), var_0)'
     #prog = 'Concatenate(Replace("+", Find("-", var_0), 1, ""), var_0)'
     ast = parse(sl, prog)
-    #I = [stringprog.input]
+    #I = [stringprogs.input]
     I = [["1", "2.0", "hello", "-1", "-1.0", "-", "hello-you"]]
     O = sl.evalIO(ast, I)
     str2 = ("str", ("str",))
