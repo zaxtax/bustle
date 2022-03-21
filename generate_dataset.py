@@ -54,6 +54,15 @@ def generate_input(N=3, LB=5, UB=8):
     inp = inp + stringprogs.input
     return [inp]
 
+def run_bustle(dsl, typ, inp, N):
+    all_search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N)
+    search = [v for i in range(2, N) for v in all_search[i]["str"]]
+    search_bool = [v for i in range(2, N) for v in all_search[i]["bool"]]
+    search_int = [v for i in range(2, N) for v in all_search[i]["int"]]
+    all_search = search + search_bool + search_int
+    return search, all_search
+
+
 def generate_dataset():
     return generate_dataset_cheat()
 
@@ -61,7 +70,7 @@ def generate_dataset():
 def generate_dataset_cheat():
     from dslparser import parse
     dsl = stringdsl
-    progs = [parse(dsl,prog) for prog in [stringprogs.stringprogs[1]]]
+    progs = [parse(dsl,prog) for prog in stringprogs.stringprogs]
     progs1 = [prog for prog in progs if dsl.numInputs(prog) == 1]
     exps = itertools.chain(*(subexpressions(prog) for prog in progs1))
 
@@ -71,11 +80,7 @@ def generate_dataset_cheat():
     data = []
     for i in range(N_search):
         inp = [stringprogs.input]
-        all_search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N)
-        search = [v for i in range(2, N) for v in all_search[i]["str"]]
-        search_bool = [v for i in range(2, N) for v in all_search[i]["bool"]]
-        search_int = [v for i in range(2, N) for v in all_search[i]["int"]]
-        all_search = search + search_bool + search_int
+        search, all_search = run_bustle(dsl, typ, inp, N)
         samples = [(e, dsl.evalIO(e, inp)) for e in exps]
         samples = [(e,o) for (e,o) in samples if type(o[0]) is str]
         for sample in samples:
@@ -94,10 +99,9 @@ def generate_dataset_old(dsl=stringdsl):
     N_selected = 1000
     for i in range(N_search):
         inp = generate_input()
-        search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N)
-        search = [v for i in range(2, N) for v in search[i]["str"]]
+        search, all_search = run_bustle(dsl, typ, inp, N)
         for j in range(N_selected):
-            data.append(select_expression(search, dsl, inp))
+            data.append(select_expression(all_search, search, dsl, inp))
         #for sample in search:
-        #    data.append(build_sample(sample, search, dsl, inp))
+        #    data.append(build_sample(sample, all_search, dsl, inp))
     return data
