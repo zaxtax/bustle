@@ -10,6 +10,8 @@ from absl import app
 from absl import flags
 from absl import logging
 
+START = flags.DEFINE_integer('start', 0, 'starting index')
+
 def main(_):
     sl = stringdsl
     I = stringprogs.all_inputs(1)
@@ -17,12 +19,12 @@ def main(_):
     Ms = loadModel()
     
     str2 = ("str", ("str",))
-    
-    for prog in stringprogs.stringprogs:
-        ast = parse(sl, prog)
-        if sl.numInputs(ast)>1:
-            continue
+
+    asts = [parse(sl, prog) for prog in stringprogs.stringprogs]
+    asts = [ast for ast in asts if sl.numInputs(ast)==1]
+    for ast in asts[START.value:]:
         O = sl.evalIO(ast, I)
+        prog = printer(sl, ast)
         print('bench', prog)
         ast_found = bustle(sl, str2, I, O, llProps, Ms, print_stats=True)
         prog_found = printer(sl, ast_found)

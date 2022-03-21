@@ -75,8 +75,8 @@ def generate_dataset_cheat():
     exps = list(itertools.chain(*(subexpressions(prog) for prog in progs1)))
 
     N = 7
-    N_search = 5
-    N_selected = 1000
+    N_search = 1
+    N_selected = 2000
     data = []
     for i in range(N_search):
         inp = [stringprogs.input]
