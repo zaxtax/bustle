@@ -212,7 +212,8 @@ class StringDsl(Dsl):
         else:
             return []
     def extractAllConstantStrings(self, xs):
-        r = itertools.chain(*(extractConstantStrings(parse(self, x)) for x in xs))
+        from dslparser import parse
+        r = itertools.chain(*(self.extractConstantStrings(parse(self, x)) for x in xs))
         return list(set(r))
 
     def inferType(self, v):
@@ -225,7 +226,8 @@ class StringDsl(Dsl):
         else:
             assert False
 
-stringdsl = StringDsl()
+import stringprogs
+stringdsl = StringDsl(progs=stringprogs.stringprogs)
 
 def test():
     from bustle import bustle, propertySignatureSize
@@ -236,8 +238,8 @@ def test():
     str2 = ("str", ("str",))
     str3 = ("str", ("str", "str"))
 
-    sl = StringDsl()
-    slx = StringDsl(True)
+    sl = StringDsl(progs=[])
+    slx = StringDsl(True, progs=[])
     MsInit = {
         (("str",), "str", "str"): Rater(
             2 * propertySignatureSize(("str",), "str", llProps)
