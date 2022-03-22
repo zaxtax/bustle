@@ -9,6 +9,7 @@ from rich.progress import (
     BarColumn,
     Progress,
     MofNCompleteColumn,
+    TimeElapsedColumn,
     TimeRemainingColumn,
 )
 
@@ -58,7 +59,8 @@ def batch_dataset(dataset, llProps):
         BarColumn(None),
         "[progress.percentage]{task.percentage:>3.0f}%",
         MofNCompleteColumn(),
-        TimeRemainingColumn(elapsed_when_finished=True),
+        TimeRemainingColumn(),
+        TimeElapsedColumn(),
     ) as progress:
         for i, sample in enumerate(progress.track(dataset, description=desc)):
             pos, neg = sample

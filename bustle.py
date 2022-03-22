@@ -167,7 +167,7 @@ def propertySignatureSize(Its, Ot, llProps):
     return size
 
 
-@cached
+@cached(max_size=100000)
 def propertySignature(Is, Its, O, Ot, llProps):
     propSig = []
     if llProps is None:
