@@ -198,7 +198,7 @@ class StringDsl(Dsl):
                 "{", "}", "-", "+", "_", "/", "$", "#", ":",";", "@","%", "O"
             ]
         N = len(O)
-        intVs = self.constantVs(N, "int", [0, 1, 2, 3, 15, 99])
+        intVs = self.constantVs(N, "int", [0, 1, 2, 3, 5, 15, 99])
         strVs = self.constantVs(
             N,
             "str",
