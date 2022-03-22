@@ -96,6 +96,14 @@ def generate_input(N=3, LB=5, UB=8):
     return [inp]
 
 
+def run_bustle_cache(dsl, typ, inp, N, src="cache_bustle.pt"):
+    try:
+        return torch.load(src)
+    except FileNotFoundError:
+        x = run_bustle(dsl, typ, inp, N)
+        torch.save(x, src)
+        return x
+
 def run_bustle(dsl, typ, inp, N):
     all_search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N, print_stats=True)
     search = [v for i in range(2, N) for v in all_search[i]["str"]]
@@ -106,15 +114,16 @@ def run_bustle(dsl, typ, inp, N):
 
 
 def generate_dataset():
-    return generate_dataset_cheat()
+    return generate_dataset_cheat([0])
 
-
-def generate_dataset_cheat():
+def generate_dataset_cheat(only=None):
     from dslparser import parse
 
     dsl = stringdsl
     progs = [parse(dsl, prog) for prog in stringprogs.stringprogs]
     progs1 = [prog for prog in progs if dsl.numInputs(prog) == 1]
+    if only is not None:
+        progs1 = [prog for i,prog in enumerate(progs1) if i in only]
     exps = list(itertools.chain(*(subexpressions(prog) for prog in progs1)))
 
     N = 6
@@ -125,7 +134,7 @@ def generate_dataset_cheat():
         inp = [stringprogs.input]
         print("")
         print("BUSTLE")
-        search, all_search = run_bustle(dsl, typ, inp, N)
+        search, all_search = run_bustle_cache(dsl, typ, inp, N)
         samples = [(e, dsl.evalIO(e, inp)) for e in exps]
         all_search = all_search + samples
         samples = [(e, o) for (e, o) in samples if type(o[0]) is str]
@@ -133,7 +142,7 @@ def generate_dataset_cheat():
         for sample in track(samples, description="Samples ..."):
             for i in range(N_selected):
                 data.append(build_sample(sample, all_search, search, dsl, inp))
-        for j in track(range(10*N_selected), description="Extra samples ..."):
+        for j in track(range(100*N_selected), description="Extra samples ..."):
             data.append(select_expression(all_search, search, dsl, inp))
         print()
     random.shuffle(data)

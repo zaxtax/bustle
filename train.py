@@ -52,7 +52,7 @@ optimizers = {}
 loss = BCELoss()
 
 print()
-for epoch in range(10):
+for epoch in range(100):
     print(f"Epoch {epoch + 1}")
     Ts = {}
     for key in dataset:
