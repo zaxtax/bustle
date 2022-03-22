@@ -114,7 +114,7 @@ def run_bustle(dsl, typ, inp, N):
 
 
 def generate_dataset():
-    return generate_dataset_cheat([0])
+    return generate_dataset_cheat()
 
 def generate_dataset_cheat(only=None):
     from dslparser import parse
@@ -126,7 +126,7 @@ def generate_dataset_cheat(only=None):
         progs1 = [prog for i,prog in enumerate(progs1) if i in only]
     exps = list(itertools.chain(*(subexpressions(prog) for prog in progs1)))
 
-    N = 6
+    N = 7
     N_search = 1
     N_selected = 4000
     data = []
