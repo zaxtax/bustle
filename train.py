@@ -1,9 +1,10 @@
 import torch
 from torch.nn import BCELoss
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from model import Rater
-from generate_dataset import generate_dataset
+from generate_dataset import generate_dataset, batch_dataset
 from stringdsl import stringdsl
 from stringprops import llProps
 from bustle import propertySignature, propertySignatureSize
@@ -11,7 +12,7 @@ from bustle import propertySignature, propertySignatureSize
 It = ("str",)
 Ot = "str"
 dsl = stringdsl
-dataset = generate_dataset()
+dataset = batch_dataset(generate_dataset(), llProps)
 
 
 def initialModel(key):
@@ -45,37 +46,28 @@ optimizers = {}
 loss = BCELoss()
 
 for epoch in range(10):
-    print("epoch ", epoch + 1)
+    print("Epoch ", epoch + 1)
     Ts = {}
-    for i, sample in enumerate(tqdm(dataset)):
-        pos, neg = sample
+    for key in dataset:
+        M = Ms.get(key)
+        optimizer = optimizers.get(key)
+        if M is None:
+            M = initialModel(key)
+            Ms[key] = M
+            optimizer = torch.optim.Adam(M.parameters(), lr=0.001)
+            optimizers[key] = optimizer
+        train_losses = Ts.get(key)
+        if train_losses is None:
+            train_losses = []
+            Ts[key] = train_losses
+        M.train()
 
-        for (ex, valence) in ((pos, 1), (neg, 0)):
-            (I, V, O) = ex
-            Vt = dsl.inferType(V[0])
-
-            key = (It, Ot, Vt)
-            M = Ms.get(key)
-            optimizer = optimizers.get(key)
-            if M is None:
-                M = initialModel(key)
-                Ms[key] = M
-                optimizer = torch.optim.Adam(M.parameters(), lr=0.001)
-                optimizers[key] = optimizer
-            train_losses = Ts.get(key)
-            if train_losses is None:
-                train_losses = []
-                Ts[key] = train_losses
-            M.train()
-
+        for i, (x, y) in enumerate(DataLoader(dataset[key], batch_size=128, shuffle=True)):
             optimizer.zero_grad()
 
-            s1 = propertySignature(I, It, O, Ot, llProps)
-            s2 = propertySignature([V], (Vt,), O, Ot, llProps)
-            s = torch.cat([s1, s2])
-
-            outputs = M(s)
-            loss_v = loss(outputs, torch.tensor([1.0 * valence]))
+            outputs = M(x)
+            loss_v = loss(outputs, y)
+            (It, Ot, Vt) = key
             if i == 0 and Vt == "str":
                 print("loss", Vt, loss_v.item())
             loss_v.backward()

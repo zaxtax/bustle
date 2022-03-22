@@ -1,9 +1,10 @@
-from bustle import bustle
+from bustle import bustle, propertySignature
 from stringdsl import stringdsl
 import stringprogs
 import itertools
 import random
 import string
+import torch
 
 def subexpressions(exp):
     r = []
@@ -34,6 +35,33 @@ def build_sample(sample, all_search, search, dsl, inp):
     o = sample[1]
     (pos, neg) = handle_expression(exp, all_search, search, dsl, inp)
     return ((inp, pos, o), (inp, neg, o))
+
+
+def batch_dataset(dataset, llProps):
+    print("Batching dataset")
+    It = ("str",)
+    Ot = "str"
+    Ms = {}
+    for i, sample in enumerate(dataset):
+        if i % 1000 == 0:
+            print('.', end='', flush=True)
+
+        pos, neg = sample
+        for (ex, valence) in ((pos, 1.), (neg, 0.)):
+            (I, V, O) = ex
+            Vt = stringdsl.inferType(V[0])
+            key = (It, Ot, Vt)
+            s1 = propertySignature(I, It, O, Ot, llProps)
+            s2 = propertySignature([V], (Vt,), O, Ot, llProps)
+            s = torch.cat([s1, s2])
+
+            if key not in Ms:
+                Ms[key] = [(s, torch.tensor([valence]))]
+            else:
+                Ms[key].append((s, torch.tensor([valence])))
+    print()
+    return Ms
+
 
 
 typ = ("str", ("str",))
@@ -74,7 +102,7 @@ def generate_dataset_cheat():
     progs1 = [prog for prog in progs if dsl.numInputs(prog) == 1]
     exps = list(itertools.chain(*(subexpressions(prog) for prog in progs1)))
 
-    N = 7
+    N = 6
     N_search = 1
     N_selected = 2000
     data = []
@@ -93,6 +121,7 @@ def generate_dataset_cheat():
                 data.append(build_sample(sample, all_search, search, dsl, inp))
         #for j in range(N_selected):
         #    data.append(select_expression(search, dsl, inp))
+        print()
     random.shuffle(data)
     return data
 
