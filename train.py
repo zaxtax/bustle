@@ -62,7 +62,7 @@ for epoch in range(10):
             Ts[key] = train_losses
         M.train()
 
-        for i, (x, y) in enumerate(DataLoader(dataset[key], batch_size=128, shuffle=True)):
+        for i, (x, y) in enumerate(tqdm(DataLoader(dataset[key], batch_size=128, shuffle=True))):
             optimizer.zero_grad()
 
             outputs = M(x)

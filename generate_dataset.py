@@ -4,6 +4,7 @@ import stringprogs
 import itertools
 import random
 import string
+from tqdm import tqdm
 import torch
 
 def subexpressions(exp):
@@ -38,13 +39,11 @@ def build_sample(sample, all_search, search, dsl, inp):
 
 
 def batch_dataset(dataset, llProps):
-    print("Batching dataset")
+    print("Generating property signatures and Batching dataset")
     It = ("str",)
     Ot = "str"
     Ms = {}
-    for i, sample in enumerate(dataset):
-        if i % 1000 == 0:
-            print('.', end='', flush=True)
+    for i, sample in enumerate(tqdm(dataset)):
 
         pos, neg = sample
         for (ex, valence) in ((pos, 1.), (neg, 0.)):
@@ -115,8 +114,7 @@ def generate_dataset_cheat():
         samples = [(e,o) for (e,o) in samples if type(o[0]) is str]
         print('')
         print('SAMPLES')
-        for sample in samples:
-            print('.', end='', flush=True)
+        for sample in tqdm(samples):
             for i in range(N_selected):
                 data.append(build_sample(sample, all_search, search, dsl, inp))
         #for j in range(N_selected):
