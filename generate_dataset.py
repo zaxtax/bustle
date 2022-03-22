@@ -4,8 +4,16 @@ import stringprogs
 import itertools
 import random
 import string
-from tqdm import tqdm
+from rich.progress import (
+    track,
+    BarColumn,
+    Progress,
+    MofNCompleteColumn,
+    TimeRemainingColumn,
+)
+
 import torch
+
 
 def subexpressions(exp):
     r = []
@@ -31,6 +39,7 @@ def select_expression(all_search, search, dsl, inp):
     sample = random.choice(search)
     return build_sample(sample, all_search, search, dsl, inp)
 
+
 def build_sample(sample, all_search, search, dsl, inp):
     exp = sample[0]
     o = sample[1]
@@ -39,28 +48,33 @@ def build_sample(sample, all_search, search, dsl, inp):
 
 
 def batch_dataset(dataset, llProps):
-    print("Generating property signatures and Batching dataset")
+    desc = "Generating property signatures and Batching dataset ..."
     It = ("str",)
     Ot = "str"
     Ms = {}
-    for i, sample in enumerate(tqdm(dataset)):
 
-        pos, neg = sample
-        for (ex, valence) in ((pos, 1.), (neg, 0.)):
-            (I, V, O) = ex
-            Vt = stringdsl.inferType(V[0])
-            key = (It, Ot, Vt)
-            s1 = propertySignature(I, It, O, Ot, llProps)
-            s2 = propertySignature([V], (Vt,), O, Ot, llProps)
-            s = torch.cat([s1, s2])
+    with Progress(
+        "[progress.description]{task.description}",
+        BarColumn(None),
+        "[progress.percentage]{task.percentage:>3.0f}%",
+        MofNCompleteColumn(),
+        TimeRemainingColumn(elapsed_when_finished=True),
+    ) as progress:
+        for i, sample in enumerate(progress.track(dataset, description=desc)):
+            pos, neg = sample
+            for (ex, valence) in ((pos, 1.0), (neg, 0.0)):
+                (I, V, O) = ex
+                Vt = stringdsl.inferType(V[0])
+                key = (It, Ot, Vt)
+                s1 = propertySignature(I, It, O, Ot, llProps)
+                s2 = propertySignature([V], (Vt,), O, Ot, llProps)
+                s = torch.cat([s1, s2])
 
-            if key not in Ms:
-                Ms[key] = [(s, torch.tensor([valence]))]
-            else:
-                Ms[key].append((s, torch.tensor([valence])))
-    print()
-    return Ms
-
+                if key not in Ms:
+                    Ms[key] = [(s, torch.tensor([valence]))]
+                else:
+                    Ms[key].append((s, torch.tensor([valence])))
+        return Ms
 
 
 typ = ("str", ("str",))
@@ -81,6 +95,7 @@ def generate_input(N=3, LB=5, UB=8):
     inp = inp + stringprogs.input
     return [inp]
 
+
 def run_bustle(dsl, typ, inp, N):
     all_search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N, print_stats=True)
     search = [v for i in range(2, N) for v in all_search[i]["str"]]
@@ -96,8 +111,9 @@ def generate_dataset():
 
 def generate_dataset_cheat():
     from dslparser import parse
+
     dsl = stringdsl
-    progs = [parse(dsl,prog) for prog in stringprogs.stringprogs]
+    progs = [parse(dsl, prog) for prog in stringprogs.stringprogs]
     progs1 = [prog for prog in progs if dsl.numInputs(prog) == 1]
     exps = list(itertools.chain(*(subexpressions(prog) for prog in progs1)))
 
@@ -107,17 +123,16 @@ def generate_dataset_cheat():
     data = []
     for i in range(N_search):
         inp = [stringprogs.input]
-        print('')
-        print('BUSTLE')
+        print("")
+        print("BUSTLE")
         search, all_search = run_bustle(dsl, typ, inp, N)
         samples = [(e, dsl.evalIO(e, inp)) for e in exps]
-        samples = [(e,o) for (e,o) in samples if type(o[0]) is str]
-        print('')
-        print('SAMPLES')
-        for sample in tqdm(samples):
+        samples = [(e, o) for (e, o) in samples if type(o[0]) is str]
+        print("")
+        for sample in track(samples, description="Samples ..."):
             for i in range(N_selected):
                 data.append(build_sample(sample, all_search, search, dsl, inp))
-        #for j in range(N_selected):
+        # for j in range(N_selected):
         #    data.append(select_expression(search, dsl, inp))
         print()
     random.shuffle(data)
@@ -134,6 +149,6 @@ def generate_dataset_old(dsl=stringdsl):
         search, all_search = run_bustle(dsl, typ, inp, N)
         for j in range(N_selected):
             data.append(select_expression(all_search, search, dsl, inp))
-        #for sample in search:
+        # for sample in search:
         #    data.append(build_sample(sample, all_search, dsl, inp))
     return data

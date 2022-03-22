@@ -1,7 +1,7 @@
 import torch
 from torch.nn import BCELoss
 from torch.utils.data import DataLoader
-from tqdm import tqdm
+from rich.progress import Progress, MofNCompleteColumn
 
 from model import Rater
 from generate_dataset import generate_dataset, batch_dataset
@@ -23,30 +23,37 @@ def initialModel(key):
         + propertySignatureSize((Vt,), Ot, llProps)
     )
 
+
 import shutil
 import subprocess
 import datetime
 
+
 def saveModel(Ms):
-    git_id = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode('ascii').strip()
+    git_id = (
+        subprocess.check_output(["git", "rev-parse", "--short", "HEAD"])
+        .decode("ascii")
+        .strip()
+    )
 
     dt = datetime.datetime.now()
-    timestamp = dt.strftime('%Y-%m-%dT%H:%M')
+    timestamp = dt.strftime("%Y-%m-%dT%H:%M")
 
-    key = timestamp + '-' + git_id
+    key = timestamp + "-" + git_id
 
     fn_key = "models/rater_%s.pt"
     fn = fn_key % key
     torch.save(Ms, fn)
-    shutil.copy(fn, fn_key % 'latest')
+    shutil.copy(fn, fn_key % "latest")
 
 
 Ms = {}
 optimizers = {}
 loss = BCELoss()
 
+print()
 for epoch in range(10):
-    print("Epoch ", epoch + 1)
+    print(f"Epoch {epoch + 1}")
     Ts = {}
     for key in dataset:
         M = Ms.get(key)
@@ -62,15 +69,25 @@ for epoch in range(10):
             Ts[key] = train_losses
         M.train()
 
-        for i, (x, y) in enumerate(tqdm(DataLoader(dataset[key], batch_size=128, shuffle=True))):
-            optimizer.zero_grad()
+        with Progress(
+            *Progress.get_default_columns(),
+            MofNCompleteColumn(),
+        ) as progress:
+            for i, (x, y) in enumerate(
+                progress.track(
+                    DataLoader(dataset[key], batch_size=64, shuffle=True),
+                    description=f"Model {key[-1].ljust(4)}",
+                )
+            ):
+                optimizer.zero_grad()
 
-            outputs = M(x)
-            loss_v = loss(outputs, y)
-            (It, Ot, Vt) = key
-            if i == 0 and Vt == "str":
-                print("loss", Vt, loss_v.item())
-            loss_v.backward()
-            optimizer.step()
-            train_losses.append(loss_v.item())
+                outputs = M(x)
+                loss_v = loss(outputs, y)
+                (It, Ot, Vt) = key
+                if i == 0:
+                    print("loss for ", Vt, ": ", loss_v.item(), sep="")
+                loss_v.backward()
+                optimizer.step()
+                train_losses.append(loss_v.item())
     saveModel(Ms)
+    print()
