@@ -127,13 +127,14 @@ def generate_dataset_cheat():
         print("BUSTLE")
         search, all_search = run_bustle(dsl, typ, inp, N)
         samples = [(e, dsl.evalIO(e, inp)) for e in exps]
+        all_search = all_search + samples
         samples = [(e, o) for (e, o) in samples if type(o[0]) is str]
         print("")
         for sample in track(samples, description="Samples ..."):
             for i in range(N_selected):
                 data.append(build_sample(sample, all_search, search, dsl, inp))
-        # for j in range(N_selected):
-        #    data.append(select_expression(search, dsl, inp))
+        for j in track(range(10*N_selected), description="Extra samples ..."):
+            data.append(select_expression(all_search, search, dsl, inp))
         print()
     random.shuffle(data)
     return data
