@@ -1,4 +1,5 @@
 import torch
+from memoization import cached
 
 def executeV(dsl, op, args):
     arg_exps = [e for e, x in args]
@@ -164,6 +165,7 @@ def propertySignatureSize(Its, Ot, llProps):
     return size
 
 
+@cached
 def propertySignature(Is, Its, O, Ot, llProps):
     propSig = []
     if llProps is None:
