@@ -20,12 +20,14 @@ def main(_):
     
     str2 = ("str", ("str",))
 
+    count = START.value
     asts = [parse(sl, prog) for prog in stringprogs.stringprogs]
     asts = [ast for ast in asts if sl.numInputs(ast)==1]
     for ast in asts[START.value:]:
         O = sl.evalIO(ast, I)
         prog = printer(sl, ast)
-        print('bench', prog)
+        print(str(count), 'bench', prog)
+        count += 1
         ast_found = bustle(sl, str2, I, O, llProps, Ms, print_stats=True)
         prog_found = printer(sl, ast_found)
         print(prog_found)

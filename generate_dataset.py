@@ -104,7 +104,7 @@ def generate_dataset_cheat():
 
     N = 6
     N_search = 1
-    N_selected = 2000
+    N_selected = 4000
     data = []
     for i in range(N_search):
         inp = [stringprogs.input]
