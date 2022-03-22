@@ -1,5 +1,6 @@
 import torch
 from memoization import cached
+import random
 
 def executeV(dsl, op, args):
     arg_exps = [e for e, x in args]
@@ -85,7 +86,7 @@ def initialVs(dsl, I, O, It, Ot):
 #   type signature typeSig
 #   property list of typed lists of functions llProps
 #   models Ms, a dictionary keyed by types of (input, output, intermediary)
-def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, print_stats=False):
+def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_pruning=1, print_stats=False):
     Ot, It = typeSig
     s_io = propertySignature(I, It, O, Ot, llProps)
 
@@ -110,11 +111,12 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, print_stats=False):
                 stats += 1
                 if print_stats and stats % 1000 == 0:
                     print('.', end='', flush=True)
-                r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
-                if r is not None:
-                    if print_stats:
-                        print(stats)
-                    return r
+                if random.random() < random_pruning:
+                    r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
+                    if r is not None:
+                        if print_stats:
+                            print(stats)
+                        return r
 
     return E  # for debugging
 
