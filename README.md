@@ -43,6 +43,9 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
   - [ ] generate interesting inputs
   - [ ] persist the data generation
 
+### Beyond Paper
+- [ ] brute force the current benchmarks and see if the property signatures are discriminating
+
 ### Best practices
 
 - [x] build a (DSL-parameterized) program executor
