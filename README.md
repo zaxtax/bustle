@@ -45,6 +45,7 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 
 ### Beyond Paper
 - [ ] brute force the current benchmarks and see if the property signatures are discriminating
+- [ ] consider a wake/sleep approach
 
 ### Best practices
 
