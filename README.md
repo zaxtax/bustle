@@ -46,7 +46,8 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 ### Beyond Paper
 - [ ] brute force the current benchmarks and see if the property signatures are discriminating
 - [ ] consider a wake/sleep approach
-  - [ ] use a trained model with `bustle` in `generate_dataset` instead of the brute-force `bustle` without ML
+  - [ ] first, use a trained model with `bustle` in `generate_dataset` instead of the brute-force `bustle` without ML
+  - [ ] then, iterate back and forth
 
 ### Best practices
 
