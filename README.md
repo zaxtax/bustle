@@ -44,13 +44,25 @@ a re-creation and extension of _BUSTLE: Botton-up Program Synthesis Through Lear
   - [ ] persist the data generation
 
 ### Beyond Paper
-- [ ] brute force the current benchmarks and see if the property signatures are discriminating
+- [ ] see if the property signatures are discriminating
+  - [x] manually find two subexpressions, one in and one out, such that the property signatures are the same (found "s" vs "t")
+  - [ ] brute force the current benchmarks to find more meaningful discrimination
 - [ ] consider a wake/sleep approach
   - [ ] first, use a trained model with `bustle` in `generate_dataset` instead of the brute-force `bustle` without ML
   - [ ] then, iterate back and forth
 
-### Best practices
+### Literature review angles
+- [ ] find the framing that is most accurate and also gives us idea for further improvements
+  - [ ] reinforcement learning: learning a policy for how to explore programs and using that policy exploration to improve our policy exploration further
+  - [ ] wake/sleep=
+  - [ ] generator/discriminator
+  - [ ] curriculum learning
 
+### Best practices
+- [ ] have flags during training for the different experiments to generate dataset
+  - [ ] use vanilla bustle during training
+  - [ ] use learnt model during training
+  - [ ] `N` parameter as a flag
 - [x] build a (DSL-parameterized) program executor
 - [ ] improve the DSL interface so that implementations of DSLs are more concise?
 - [ ] use a proper Python testing framework?
