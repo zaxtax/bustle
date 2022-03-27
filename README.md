@@ -51,10 +51,12 @@ a re-creation and extension of _BUSTLE: Botton-up Program Synthesis Through Lear
   - [ ] first, use a trained model with `bustle` in `generate_dataset` instead of the brute-force `bustle` without ML
   - [ ] then, iterate back and forth
 
-### Literature review
-- [ ] reinforcement learning angle: learning a policy for how to explore programs and using that policy exploration to improve our policy exploration further
-- [ ] wake/sleep angle
-- [ ] generator/discriminator angle
+### Literature review angles
+- [ ] find the framing that is most honest and also gives us idea for further improvements
+  - [ ] reinforcement learning: learning a policy for how to explore programs and using that policy exploration to improve our policy exploration further
+  - [ ] wake/sleep=
+  - [ ] generator/discriminator
+  - [ ] curriculum learning
 
 ### Best practices
 
