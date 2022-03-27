@@ -59,7 +59,10 @@ a re-creation and extension of _BUSTLE: Botton-up Program Synthesis Through Lear
   - [ ] curriculum learning
 
 ### Best practices
-
+- [ ] have flags during training for the different experiments to generate dataset
+  - [ ] use vanilla bustle during training
+  - [ ] use learnt model during training
+  - [ ] `N` parameter as a flag
 - [x] build a (DSL-parameterized) program executor
 - [ ] improve the DSL interface so that implementations of DSLs are more concise?
 - [ ] use a proper Python testing framework?
