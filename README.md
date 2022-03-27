@@ -1,5 +1,5 @@
 # bustle
-a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Exploration_, an [ICLR 2021 paper](https://openreview.net/forum?id=yHeg4PbFHh) by Odena et al.
+a re-creation and extension of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Exploration_, an [ICLR 2021 paper](https://openreview.net/forum?id=yHeg4PbFHh) by Odena et al.
 
 ## TODOs
 
@@ -42,6 +42,12 @@ a re-creation of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Ex
 - [x] generate data from synthesis search (last paragraph of Section 3.1)
   - [ ] generate interesting inputs
   - [ ] persist the data generation
+
+### Beyond Paper
+- [ ] brute force the current benchmarks and see if the property signatures are discriminating
+- [ ] consider a wake/sleep approach
+  - [ ] first, use a trained model with `bustle` in `generate_dataset` instead of the brute-force `bustle` without ML
+  - [ ] then, iterate back and forth
 
 ### Best practices
 
