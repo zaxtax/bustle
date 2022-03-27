@@ -72,7 +72,6 @@ class StringDsl(Dsl):
         self.supportExtraConstants = supportExtraConstants
         super().__init__()
         self.progConstants = self.extractAllConstantStrings(progs)
-        print(self.progConstants)
 
     def execute(self, op, x):
         if op == "Concatenate":

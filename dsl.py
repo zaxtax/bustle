@@ -29,6 +29,15 @@ class Dsl:
         else:
             return 0
 
+    def size(self, xo):
+        if type(x) is tuple or type(x) is list:
+            if x[0] == "input":
+                return 1
+            else:
+                return 1 + sum(self.size(e) for e in x[1])
+        else:
+            return 1
+
     def isOp(self, token):
         return token.lower() in self.opCache
 
