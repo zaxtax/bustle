@@ -1,6 +1,8 @@
 from bustle import bustle, propertySignature
 from stringdsl import stringdsl
 import stringprogs
+from stringprops import llProps
+from model import loadModel
 import itertools
 import random
 import string
@@ -98,7 +100,7 @@ def generate_input(N=3, LB=5, UB=8):
     return [inp]
 
 
-def run_bustle_cache(dsl, typ, inp, N, src="cache_bustler.pt"):
+def run_bustle_cache(dsl, typ, inp, N, src="cache_bustle.pt"):
     try:
         return torch.load(src)
     except FileNotFoundError:
@@ -107,7 +109,8 @@ def run_bustle_cache(dsl, typ, inp, N, src="cache_bustler.pt"):
         return x
 
 def run_bustle(dsl, typ, inp, N):
-    all_search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N, random_pruning=0.01, print_stats=True)
+    Ms = loadModel()
+    all_search = bustle(dsl, typ, inp, ["dummy" for _ in inp[0]], N=N, print_stats=True, Ms=Ms, llProps=llProps)
     search = [v for i in range(2, N) for v in all_search[i]["str"]]
     search_bool = [v for i in range(2, N) for v in all_search[i]["bool"]]
     search_int = [v for i in range(2, N) for v in all_search[i]["int"]]
@@ -128,7 +131,7 @@ def generate_dataset_cheat(only=None):
         progs1 = [prog for i,prog in enumerate(progs1) if i in only]
     exps = list(itertools.chain(*(subexpressions(prog) for prog in progs1)))
 
-    N = 10
+    N = 8
     N_search = 1
     N_selected = 4000
     data = []
