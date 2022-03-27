@@ -52,7 +52,7 @@ a re-creation and extension of _BUSTLE: Botton-up Program Synthesis Through Lear
   - [ ] then, iterate back and forth
 
 ### Literature review angles
-- [ ] find the framing that is most honest and also gives us idea for further improvements
+- [ ] find the framing that is most accurate and also gives us idea for further improvements
   - [ ] reinforcement learning: learning a policy for how to explore programs and using that policy exploration to improve our policy exploration further
   - [ ] wake/sleep=
   - [ ] generator/discriminator
