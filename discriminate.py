@@ -10,9 +10,9 @@ from absl import app
 from absl import flags
 from absl import logging
 
-SUB1 = flags.DEFINE_string('sub1', "1", 'subexpression 1')
-SUB2 = flags.DEFINE_string('sub2', "2", 'subexpression 2')
-VT = flags.DEFINE_string("typ", "int", 'type of subexpressions')
+SUB1 = flags.DEFINE_string('sub1', '"s"', 'subexpression 1')
+SUB2 = flags.DEFINE_string('sub2', '"t"', 'subexpression 2')
+VT = flags.DEFINE_string("typ", "str", 'type of subexpressions')
 
 def how_discriminating(dsl, sub1, sub2, Vt, Ot, I, O):
     V1 = dsl.evalIO(sub1, I)
