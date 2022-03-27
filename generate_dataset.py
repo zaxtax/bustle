@@ -131,7 +131,7 @@ def generate_dataset_cheat(only=None):
         progs1 = [prog for i,prog in enumerate(progs1) if i in only]
     exps = list(itertools.chain(*(subexpressions(prog) for prog in progs1)))
 
-    N = 8
+    N = 15
     N_search = 1
     N_selected = 4000
     data = []
