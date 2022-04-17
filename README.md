@@ -51,6 +51,13 @@ a re-creation and extension of _BUSTLE: Botton-up Program Synthesis Through Lear
   - [ ] first, use a trained model with `bustle` in `generate_dataset` instead of the brute-force `bustle` without ML
   - [ ] then, iterate back and forth
 
+### Probe Paper
+_Just-in-Time Learning for Bottom-Up Enumerative Synthesis_, Shraddha Barke, Hila Peleg, Nadia Polikarpova. OOPSLA'20. ([PDF](https://cseweb.ucsd.edu/~npolikarpova/publications/oopsla20-probe.pdf))
+
+- [ ] implement Probe
+  - [x] implement basic skeleton for cost
+  - [ ] calculate new cost based on partial solutions
+
 ### Literature review angles
 - [ ] find the framing that is most accurate and also gives us idea for further improvements
   - [ ] reinforcement learning: learning a policy for how to explore programs and using that policy exploration to improve our policy exploration further

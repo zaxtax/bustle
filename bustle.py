@@ -120,6 +120,54 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_pruning=1, p
 
     return E  # for debugging
 
+def probe_bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_pruning=1, print_stats=False, cost=None):
+    PSol = {} # bitstring -> sol
+    if cost is None:
+        cost = {}
+        for op in dsl.Ops:
+            cost[op] = 1
+
+    Ot, It = typeSig
+    s_io = propertySignature(I, It, O, Ot, llProps)
+
+    E = {}
+    for (Vt, V) in initialVs(dsl, I, O, It, Ot):
+        w = 1
+        r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
+        if r is not None:
+            return (r, PSol)
+
+    stats = 0
+    for w in range(2, N):
+        set_empty_e_if_none(dsl, E, w)
+        for op in dsl.Ops:
+            c = cost[op]
+            if c >= w:
+                continue
+            Vt = dsl.returntype(op)
+            for args in all_args_for(dsl, op, E, w - c):
+                try:
+                    V = executeV(dsl, op, args)
+                except:
+                    # ignore expressions that cause errors
+                    continue
+                stats += 1
+                if print_stats and stats % 1000 == 0:
+                    print('.', end='', flush=True)
+                if random.random() < random_pruning:
+                    r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
+                    k = PSol_key(V, O)
+                    if k not in PSol:
+                        PSol[k] = expression(V)
+                    if r is not None:
+                        if print_stats:
+                            print(stats)
+                        return (r, PSol)
+
+    return (E, PSol)
+
+def PSol_key(V, O):
+    return tuple([v==o for v,o in zip(V[1], O)])
 
 def ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl):
     if Vt == Ot and sameO(V, O):
@@ -265,6 +313,24 @@ def test():
         al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0], llProps
     )
 
+    assert 1 == probe_bustle(al, int2, [[1, 2, 3]], [1, 1, 1], llProps, Ms)[0]
+    assert ("input", 0) == probe_bustle(al, int2, [[1, 2, 3]], [1, 2, 3], llProps, Ms)[0]
+    assert ("add", [("input", 0), 1]) == probe_bustle(
+        al, int2, [[1, 2, 3]], [2, 3, 4], llProps, Ms
+    )[0]
+    assert ("neg", [("input", 0)]) == probe_bustle(
+        al, int2, [[1, 2, 3]], [-1, -2, -3], llProps, Ms
+    )[0]
+    assert ("add", [("input", 0), ("neg", [1])]) == probe_bustle(
+        al, int2, [[1, 2, 3]], [0, 1, 2], llProps, Ms
+    )[0]
+    assert ("if", [("lt", [("input", 0), ("input", 1)]), 1, 0]) == probe_bustle(
+        al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0], llProps
+    )[0]
+
+    assert len(probe_bustle(
+        al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0], llProps
+    )[1]) > 1
 
 if __name__ == "__main__":
     print("running tests...")
