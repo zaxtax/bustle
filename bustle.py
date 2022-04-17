@@ -121,7 +121,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_pruning=1, p
     return E  # for debugging
 
 def probe_bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_pruning=1, print_stats=False, cost=None):
-    PSol = {} # bitstring -> sol
+    PSol = {} # bits -> sol
     if cost is None:
         cost = {}
         for op in dsl.Ops:
