@@ -180,11 +180,11 @@ def PSol_cost(dsl, PSol):
 
     d_ops = {}
     for op in dsl.Ops:
+        d_ops[op] = 0
         for (n,os) in d.items():
             if op in os:
                 d_ops[op] = n
                 continue
-        d_ops[op] = 0
 
     N = len(next(iter(PSol.keys())))
     pu = 1.0 / len(dsl.Ops)
