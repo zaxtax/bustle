@@ -169,6 +169,34 @@ def probe_bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_prunin
 def PSol_key(V, O):
     return tuple([v==o for v,o in zip(V[1], O)])
 
+from collections import OrderedDict
+import math
+def PSol_cost(dsl, PSol):
+    d = {}
+    for (b,p) in PSol.items():
+        k = sum(1 for x in b if x)
+        d[k] = dsl.all_ops(p)
+    d = OrderedDict(sorted(d.items(), key=lambda kv:-kv[0]))
+
+    d_ops = {}
+    for op in dsl.Ops:
+        for (n,os) in d.items():
+            if op in os:
+                d_ops[op] = n
+                continue
+        d_ops[op] = 0
+
+    N = len(next(iter(PSol.keys())))
+    pu = 1.0 / len(dsl.Ops)
+    cost = {}
+    for (op,n) in d_ops.items():
+        fit = (1.0*n)/N
+        #cost[op] = round(-math.log(pu**(1-fit)))
+        cost[op] = round(5*(1-pu**(1-fit)))
+
+    return cost
+
+
 def ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl):
     if Vt == Ot and sameO(V, O):
         return expression(V)
@@ -331,6 +359,12 @@ def test():
     assert len(probe_bustle(
         al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0], llProps
     )[1]) > 1
+
+    PSol = probe_bustle(
+        al, int3, [[1, 2, 3], [3, 1, 2]], [1, 0, 0], llProps, N=5
+    )[1]
+    cost = PSol_cost(al, PSol)
+    #print(cost)
 
 if __name__ == "__main__":
     print("running tests...")

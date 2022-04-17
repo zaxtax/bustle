@@ -29,7 +29,7 @@ class Dsl:
         else:
             return 0
 
-    def size(self, xo):
+    def size(self, x):
         if type(x) is tuple or type(x) is list:
             if x[0] == "input":
                 return 1
@@ -37,6 +37,15 @@ class Dsl:
                 return 1 + sum(self.size(e) for e in x[1])
         else:
             return 1
+
+    def all_ops(self, x):
+        if type(x) is tuple or type(x) is list:
+            if x[0] == "input":
+                return set()
+            else:
+                return set({x[0]}).union(*[self.all_ops(e) for e in x[1]])
+        else:
+            return set()
 
     def isOp(self, token):
         return token.lower() in self.opCache
