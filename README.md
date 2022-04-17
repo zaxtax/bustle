@@ -56,7 +56,8 @@ _Just-in-Time Learning for Bottom-Up Enumerative Synthesis_, Shraddha Barke, Hil
 
 - [ ] implement Probe
   - [x] implement basic skeleton for cost
-  - [ ] calculate new cost based on partial solutions
+  - [x] calculate new cost based on partial solutions
+    - [ ] debug why all costs are the same
 
 ### Literature review angles
 - [ ] find the framing that is most accurate and also gives us idea for further improvements

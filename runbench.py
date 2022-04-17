@@ -1,6 +1,7 @@
 from dslparser import parse, printer
 from stringdsl import stringdsl
 from bustle import bustle, propertySignatureSize
+from bustle import probe_bustle, PSol_cost
 import stringprogs
 from stringprops import llProps
 from model import Rater, loadModel
@@ -28,6 +29,10 @@ def main(_):
         prog = printer(sl, ast)
         print(str(count), 'bench', prog)
         count += 1
+
+        PSol = probe_bustle(sl, str2, I, O, llProps, Ms, N=5)[1]
+        print(PSol_cost(sl, PSol))
+
         ast_found = bustle(sl, str2, I, O, llProps, Ms, print_stats=True)
         prog_found = printer(sl, ast_found)
         print(prog_found)
