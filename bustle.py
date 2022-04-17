@@ -191,8 +191,8 @@ def PSol_cost(dsl, PSol):
     cost = {}
     for (op,n) in d_ops.items():
         fit = (1.0*n)/N
-        #cost[op] = round(-math.log(pu**(1-fit)))
-        cost[op] = round(5*(1-pu**(1-fit)))
+        cost[op] = round(-math.log(pu**(1-fit)))
+        #cost[op] = round(5*(1-pu**(1-fit)))
 
     return cost
 

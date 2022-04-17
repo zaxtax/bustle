@@ -240,6 +240,7 @@ stringdsl = StringDsl(progs=stringprogs.stringprogs)
 
 def test():
     from bustle import bustle, propertySignatureSize
+    from bustle import probe_bustle, PSol_cost
     from stringprops import llProps
     from model import Rater, loadModel
     import torch
@@ -298,6 +299,14 @@ def test():
                 ("Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])]),
                 ('Replace', [('input', 0), 1, ('Minus', [0, 2]), ''])
             ])
+
+        PSol = probe_bustle(
+                sl, str2,
+                [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
+                llProps, Ms, print_stats=True, N=5
+            )[1]
+        cost = PSol_cost(sl, PSol)
+        print(cost)
 
 if __name__ == "__main__":
     print("running tests...")
