@@ -4,6 +4,7 @@ from dsl import Dsl
 
 class StringDsl(Dsl):
     def __init__(self, supportExtraConstants=False, fewOps=False, progs=[]):
+        Name = "string manipulation DSL"
 
         # note: because we don't support overloading, we name
         # SubstituteI instead of overloading Substitute, and
@@ -69,6 +70,7 @@ class StringDsl(Dsl):
 
         self.Ops = FewOps if fewOps else Ops
         self.Types = Types
+        self.Name = Name
         self.supportExtraConstants = supportExtraConstants
         super().__init__()
         self.progConstants = self.extractAllConstantStrings(progs)
