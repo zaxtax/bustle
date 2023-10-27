@@ -64,6 +64,8 @@ class Dsl:
         t, _ = self.types(op)
         return t
 
+    def desc(self):
+        return f"The {self.Name} has operations {self.Ops}."
 
 def test():
     from arithdsl import ArithDsl

@@ -203,7 +203,7 @@ def ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, llm, dsl):
     if not containsV(V, E, Vt):
         wp = w
         s_vo = propertySignature((value(V),), (Vt,), O, Ot, llProps)
-        wp = reweightWithModel(Ms, llm, It, Ot, Vt, s_io, s_vo, w)
+        wp = reweightWithModel(Ms, llm, dsl, It, Ot, Vt, s_io, s_vo, w)
         addE(dsl, E, wp, Vt, V)
     return None
 
@@ -285,7 +285,7 @@ def discrete_prediction(w, p):
     return w + 5 - d
 
 
-def reweightWithModel(Ms, llm, It, Ot, Vt, s_io, s_vo, w):
+def reweightWithModel(Ms, llm, dsl, It, Ot, Vt, s_io, s_vo, w):
     if Ms is None:
         return w
     if s_io is None or s_vo is None:
