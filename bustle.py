@@ -86,14 +86,14 @@ def initialVs(dsl, I, O, It, Ot):
 #   type signature typeSig
 #   property list of typed lists of functions llProps
 #   models Ms, a dictionary keyed by types of (input, output, intermediary)
-def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_pruning=1, print_stats=False):
+def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, llm=None, N=100, random_pruning=1, print_stats=False):
     Ot, It = typeSig
     s_io = propertySignature(I, It, O, Ot, llProps)
 
     E = {}
     for (Vt, V) in initialVs(dsl, I, O, It, Ot):
         w = 1
-        r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
+        r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, llm, dsl)
         if r is not None:
             return r
 
@@ -112,7 +112,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_pruning=1, p
                 if print_stats and stats % 1000 == 0:
                     print('.', end='', flush=True)
                 if random.random() < random_pruning:
-                    r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
+                    r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, llm, dsl)
                     if r is not None:
                         if print_stats:
                             print(stats)
@@ -120,7 +120,7 @@ def bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_pruning=1, p
 
     return E  # for debugging
 
-def probe_bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_pruning=1, print_stats=False, cost=None):
+def probe_bustle(dsl, typeSig, I, O, llProps=None, Ms=None, llm=None, N=100, random_pruning=1, print_stats=False, cost=None):
     PSol = {} # bits -> sol
     if cost is None:
         cost = {}
@@ -133,7 +133,7 @@ def probe_bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_prunin
     E = {}
     for (Vt, V) in initialVs(dsl, I, O, It, Ot):
         w = 1
-        r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
+        r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, llm, dsl)
         if r is not None:
             return (r, PSol)
 
@@ -155,7 +155,7 @@ def probe_bustle(dsl, typeSig, I, O, llProps=None, Ms=None, N=100, random_prunin
                 if print_stats and stats % 1000 == 0:
                     print('.', end='', flush=True)
                 if random.random() < random_pruning:
-                    r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl)
+                    r = ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, llm, dsl)
                     k = PSol_key(V, O)
                     if k not in PSol:
                         PSol[k] = expression(V)
@@ -197,13 +197,13 @@ def PSol_cost(dsl, PSol):
     return cost
 
 
-def ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, dsl):
+def ret_addV(E, w, It, Ot, Vt, s_io, V, O, llProps, Ms, llm, dsl):
     if Vt == Ot and sameO(V, O):
         return expression(V)
     if not containsV(V, E, Vt):
         wp = w
         s_vo = propertySignature((value(V),), (Vt,), O, Ot, llProps)
-        wp = reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w)
+        wp = reweightWithModel(Ms, llm, It, Ot, Vt, s_io, s_vo, w)
         addE(dsl, E, wp, Vt, V)
     return None
 
@@ -285,7 +285,7 @@ def discrete_prediction(w, p):
     return w + 5 - d
 
 
-def reweightWithModel(Ms, It, Ot, Vt, s_io, s_vo, w):
+def reweightWithModel(Ms, llm, It, Ot, Vt, s_io, s_vo, w):
     if Ms is None:
         return w
     if s_io is None or s_vo is None:
