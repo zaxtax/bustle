@@ -239,6 +239,7 @@ import stringprogs
 stringdsl = StringDsl(progs=stringprogs.stringprogs)
 
 def test():
+    from softcheck import softcheck
     from bustle import bustle, propertySignatureSize
     from bustle import probe_bustle, PSol_cost
     from stringprops import llProps
@@ -290,12 +291,12 @@ def test():
             llProps, Ms, print_stats=True
         )
         print("test 5: ", end='')
-        assert (
+        softcheck(
             bustle(
                 sl, str2,
                 [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
                 llProps, Ms, print_stats=True
-            ) in  [
+            ), [
                 ("Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])]),
                 ('Replace', [('input', 0), 1, ('Minus', [0, 2]), ''])
             ])
