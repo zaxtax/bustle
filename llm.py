@@ -1,8 +1,11 @@
 from llm_outlines import gen
 
 debug = True
+choices = ["A", "B", "C", "D", "E"]
+choice_stats = {c:0 for c in choices}
 
 def generateDeltaWeight(dsl, It, Ot, Vt, I, O, V):
+    global choice_stats
     prompt = dsl.desc()
     prompt += "\n"
     n = len(O)
@@ -20,10 +23,10 @@ def generateDeltaWeight(dsl, It, Ot, Vt, I, O, V):
     if debug:
         print("PROMPT:")
         print(prompt)
-    choices = ["A", "B", "C", "D", "E"]
     r = gen(prompt, choices)
     if debug:
         print(r)
+    choice_stats[r] += 1
     return choices.index(r)
 
 def test():
@@ -34,6 +37,7 @@ def test():
     print(bustle(
         al, int2, [[1, 2, 3, 4]], [0, 2, 4, 6], llm=generateDeltaWeight
     ))
+    print(choice_stats)
 
 if __name__ == "__main__":
     print("running tests...")
