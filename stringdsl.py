@@ -247,6 +247,7 @@ def test():
     from stringprops import llProps
     from model import Rater, loadModel
     import torch
+    from llm import generateDeltaWeight
 
     str2 = ("str", ("str",))
     str3 = ("str", ("str", "str"))
@@ -260,28 +261,29 @@ def test():
     }
     MsTrained = loadModel()
 
-    for (desc, sl, llProps, Ms) in [
-            ('no ML', sl, None, None),
-            ('init ML', sl, llProps, MsInit),
-            ('trained ML', sl, llProps, MsTrained),
-            ('trained ML, extended DSL', slx, llProps, MsTrained)
+    for (desc, sl, llProps, Ms, llm) in [
+            ('no ML', sl, None, None, None),
+            ('LLM', sl, None, None, generateDeltaWeight),
+            ('init ML', sl, llProps, MsInit, None),
+            ('trained ML', sl, llProps, MsTrained, None),
+            ('trained ML, extended DSL', slx, llProps, MsTrained, None)
             ]:
         print(desc)
 
         print("test 1: ", end='')
         assert ("Left", [("input", 0), 1]) == bustle(
-            sl, str2, [["hello", "world"]], ["h", "w"], llProps, Ms, print_stats=True
+            sl, str2, [["hello", "world"]], ["h", "w"], llProps, Ms, llm, print_stats=True
         )
         print("test 2: ", end='')
         assert ("Right", [("input", 0), 1]) == bustle(
-            sl, str2, [["hello", "world"]], ["o", "d"], llProps, Ms, print_stats=True
+            sl, str2, [["hello", "world"]], ["o", "d"], llProps, Ms, llm, print_stats=True
         )
         print("test 3: ", end='')
         assert ("Concatenate", [("input", 0), ("input", 1)]) == bustle(
             sl, str3,
             [["hello", "world"], ["you", "domination"]],
             ["helloyou", "worlddomination"],
-            llProps, Ms, print_stats=True
+            llProps, Ms, llm, print_stats=True
         )
         print("test 4: ", end='')
         assert (
@@ -290,14 +292,14 @@ def test():
             sl, str3,
             [["hello", "world"], ["you", "domination"]],
             ["hello you", "world domination"],
-            llProps, Ms, print_stats=True
+            llProps, Ms, llm, print_stats=True
         )
         print("test 5: ", end='')
         softcheck(
             bustle(
                 sl, str2,
                 [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
-                llProps, Ms, print_stats=True
+                llProps, Ms, llm, print_stats=True
             ), [
                 ("Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])]),
                 ('Replace', [('input', 0), 1, ('Minus', [0, 2]), ''])
@@ -306,7 +308,7 @@ def test():
         PSol = probe_bustle(
                 sl, str2,
                 [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
-                llProps, Ms, print_stats=True, N=5
+                llProps, Ms, llm, print_stats=True, N=5
             )[1]
         cost = PSol_cost(sl, PSol)
         print(cost)
