@@ -286,6 +286,8 @@ def discrete_prediction(w, p):
 
 
 def reweightWithModel(Ms, llm, dsl, It, Ot, Vt, s_io, s_vo, w, I, O, V):
+    if llm is not None:
+        return w + llm(dsl, It, Ot, Vt, I, O, V)
     if Ms is None:
         return w
     if s_io is None or s_vo is None:

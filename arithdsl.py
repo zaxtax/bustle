@@ -18,6 +18,7 @@ class ArithDsl(Dsl):
         elif op == "mul":
             return args[0] * args[1]
         elif op == "div":
+            #return args[0] // args[1]
             return args[0] / args[1]
         elif op == "neg":
             return -args[0]
