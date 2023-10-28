@@ -1,6 +1,11 @@
 # bustle
 a re-creation and extension of _BUSTLE: Botton-up Program Synthesis Through Learning-Guided Exploration_, an [ICLR 2021 paper](https://openreview.net/forum?id=yHeg4PbFHh) by Odena et al.
 
+## Installation
+- `pip install -r requirements.txt`
+- `pip install git+https://github.com/huggingface/transformers.git`
+- `pip install "outlines @ git+https://github.com/outlines-dev/outlines.git@main"`
+
 ## TODOs
 
 ### Paper
