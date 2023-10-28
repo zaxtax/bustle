@@ -1,5 +1,7 @@
 from llm_outlines import gen
 
+debug = True
+
 def generateDeltaWeight(dsl, It, Ot, Vt, I, O, V):
     prompt = dsl.desc()
     prompt += "\n"
@@ -15,11 +17,13 @@ def generateDeltaWeight(dsl, It, Ot, Vt, I, O, V):
     prompt += "A means very likely to appear.\n"
     prompt += "E means very unlikely to appear.\n"
     prompt += "Your grade is:"
-    print("PROMPT:")
-    print(prompt)
+    if debug:
+        print("PROMPT:")
+        print(prompt)
     choices = ["A", "B", "C", "D", "E"]
     r = gen(prompt, choices)
-    print(r)
+    if debug:
+        print(r)
     return choices.index(r)
 
 def test():
