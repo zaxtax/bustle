@@ -1,4 +1,4 @@
-#from llm_outlines import gen
+from llm_outlines import gen
 
 def generateDeltaWeight(dsl, It, Ot, Vt, I, O, V):
     prompt = dsl.desc()
@@ -17,7 +17,10 @@ def generateDeltaWeight(dsl, It, Ot, Vt, I, O, V):
     prompt += "Your grade is:"
     print("PROMPT:")
     print(prompt)
-    return 0
+    choices = ["A", "B", "C", "D", "E"]
+    r = gen(prompt, choices)
+    print(r)
+    return choices.index(r)
 
 def test():
     from arithdsl import ArithDsl
