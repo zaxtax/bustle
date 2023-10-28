@@ -1,5 +1,9 @@
 absl-py
+accelerate
+datasets
 memoization
+outlines
 rich
 torch
+transformers
 tqdm

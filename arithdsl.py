@@ -5,9 +5,11 @@ class ArithDsl(Dsl):
     def __init__(self):
         Ops = ["add", "mul", "div", "neg", "lt", "if"]
         Types = ["int", "bool"]
+        Name = "arithmetic expression DSL"
 
         self.Ops = Ops
         self.Types = Types
+        self.Name = Name
         super().__init__()
 
     def execute(self, op, args):
@@ -16,6 +18,7 @@ class ArithDsl(Dsl):
         elif op == "mul":
             return args[0] * args[1]
         elif op == "div":
+            #return args[0] // args[1]
             return args[0] / args[1]
         elif op == "neg":
             return -args[0]
