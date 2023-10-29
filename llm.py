@@ -1,3 +1,4 @@
+from dslparser import printer
 from llm_outlines import gen
 
 debug = True
@@ -9,16 +10,19 @@ def generateDeltaWeight(dsl, It, Ot, Vt, I, O, V):
     prompt = dsl.desc()
     prompt += "\n"
     n = len(O)
-    prompt += f"You have to generate a function f with input/output as follows on {n} examples:\n"
-    for i in range(0, n):
-        ins = [repr(x[i]) for x in I]
-        out = repr(O[i])
-        prompt += f"{i}. f({','.join(ins)}) = {out}\n"
-    expr = V[0]
+    prompt += f"You have to generate a function with input/output as follows on {n} examples:\n"
+    prompt += dsl.io_print(I, O)
+    expr = printer(dsl, V[0])
     res = V[1]
-    prompt += f"Can you guess whether the DSL expression {expr} is likely to appear to as a sub-expression in a solution to the function f to synthesize. The expression has the following output on the inputs above: {res}. Answer with one of the grades A, B, C, D, E.\n"
+    outres = O
+    prompt += f"Can you guess whether the DSL expression `{expr}` is likely to appear to as a sub-expression in a solution in our DSL to the function `f` to synthesize. The expression has the following output on the inputs above: {res}, while the final solution should have the following output: {outres}.\n"
+    prompt += "Answer with one of the grades A, B, C, D, E.\n"
     prompt += "A means very likely to appear.\n"
+    prompt += "B means somewhat likely to appear.\n"
+    prompt += "C means somewhat unlikely to appear.\n"
+    prompt += "D means unlikely to appear.\n"
     prompt += "E means very unlikely to appear.\n"
+    prompt += "So answer with one of the grades A, B, C, D, E.\n"
     prompt += "Your grade is:"
     if debug:
         print("PROMPT:")

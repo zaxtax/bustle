@@ -10,6 +10,7 @@ class ArithDsl(Dsl):
         self.Ops = Ops
         self.Types = Types
         self.Name = Name
+        self.Ex = (("add", [("input", 0), 1]), [[1, 2, 3]], [2, 3, 4])
         super().__init__()
 
     def execute(self, op, args):

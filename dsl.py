@@ -1,3 +1,5 @@
+from dslparser import printer
+
 def makeOpCache(Ops):
     cache = {}
     for op in Ops:
@@ -65,7 +67,26 @@ class Dsl:
         return t
 
     def desc(self):
-        return f"The {self.Name} has operations {self.Ops}."
+        prompt = ""
+        ops = ",".join([f"`{op}`" for op in self.Ops])
+        (V0, I, O) = self.Ex
+        n = len(O)
+        expr = printer(self, V0)
+        prompt = f"The {self.Name} has operations {ops}.\n"
+        prompt += f"As an example, consider a function with the following input/output on {n} examples:\n"
+        prompt += self.io_print(I, O)
+        prompt += f"A possible solution expression is {expr}.\n"
+        return prompt
+
+    def io_print(self, I, O):
+        prompt = ""
+        n = len(O)
+        for i in range(0, n):
+            ins = [repr(x[i]) for x in I]
+            out = repr(O[i])
+            prompt += f"{i}. ({','.join(ins)}) -> {out}\n"
+        return prompt
+
 
 def test():
     from arithdsl import ArithDsl

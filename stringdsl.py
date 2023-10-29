@@ -72,6 +72,9 @@ class StringDsl(Dsl):
         self.Types = Types
         self.Name = Name
         self.supportExtraConstants = supportExtraConstants
+        self.Ex = (("Concatenate", [("input", 0), ("input", 1)]),
+                   [["hello", "world"], ["you", "domination"]],
+                   ["helloyou", "worlddomination"],)
         super().__init__()
         self.progConstants = self.extractAllConstantStrings(progs)
 
