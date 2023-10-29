@@ -38,9 +38,10 @@ def test():
     from bustle import bustle   
     al = ArithDsl()
     int2 = ("int", ("int",))
-    print(bustle(
+    r = bustle(
         al, int2, [[1, 2, 3, 4]], [0, 2, 4, 6], llm=generateDeltaWeight
-    ))
+    )
+    print(printer(al, r))
     print(choice_stats)
 
 if __name__ == "__main__":
