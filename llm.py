@@ -15,7 +15,7 @@ def generateDeltaWeight(dsl, It, Ot, Vt, I, O, V):
     expr = printer(dsl, V[0])
     res = V[1]
     outres = O
-    prompt += f"Can you guess whether the DSL expression `{expr}` is likely to appear to as a sub-expression in a solution in our DSL to the function `f` to synthesize. The expression has the following output on the inputs above: {res}, while the final solution should have the following output: {outres}.\n"
+    prompt += f"Can you guess whether the DSL expression `{expr}` is likely to appear as a sub-expression in a solution in our DSL to the function `f` to synthesize. The expression has the following output on the inputs above: {res}, while the final solution should have the following output: {outres}.\n"
     prompt += "Answer with one of the grades A, B, C, D, E.\n"
     prompt += "A means very likely to appear.\n"
     prompt += "B means somewhat likely to appear.\n"
