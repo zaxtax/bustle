@@ -5,7 +5,9 @@ datasets
 huggingface_hub
 memoization
 outlines
+protobuf
 rich
+sentencepiece
 torch
 transformers
 tqdm

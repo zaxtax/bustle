@@ -4,11 +4,12 @@ import outlines.models as models
 import torch
 from transformers import BitsAndBytesConfig
 
+# base_model_name = "reciprocate/tiny-llama"
 base_model_name = "mistralai/Mistral-7B-v0.1"
 # base_model_name = "meta-llama/Llama-2-7b-hf"
 # base_model_name = "meta-llama/Llama-2-13b-hf"
 # base_model_name = "meta-llama/Llama-2-70b-hf"
-# base_model_name = "reciprocate/tiny-llama"
+# base_model_name = "Phind/Phind-CodeLlama-34B-v2"
 
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,
