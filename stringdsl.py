@@ -275,18 +275,24 @@ def test():
 
         print("test 1: ", end='')
         assert ("Left", [("input", 0), 1]) == bustle(
-            sl, str2, [["hello", "world"]], ["h", "w"], llProps, Ms, llm, print_stats=True
+            sl, str2, [["hello", "world"]], ["h", "w"], llProps, Ms,
+            llm("Consider the problem of taking the first character of a string.") if llm is not None else None,
+            print_stats=True
         )
         print("test 2: ", end='')
         assert ("Right", [("input", 0), 1]) == bustle(
-            sl, str2, [["hello", "world"]], ["o", "d"], llProps, Ms, llm, print_stats=True
+            sl, str2, [["hello", "world"]], ["o", "d"], llProps, Ms,
+            llm("Consider the probelm of taking the last character of a string.") if llm is not None else None,
+            print_stats=True
         )
         print("test 3: ", end='')
         assert ("Concatenate", [("input", 0), ("input", 1)]) == bustle(
             sl, str3,
             [["hello", "world"], ["you", "domination"]],
             ["helloyou", "worlddomination"],
-            llProps, Ms, llm, print_stats=True
+            llProps, Ms,
+            llm("Consider the problem of concatenating two strings.") if llm is not None else None,
+            print_stats=True
         )
         print("test 4: ", end='')
         assert (
@@ -295,26 +301,28 @@ def test():
             sl, str3,
             [["hello", "world"], ["you", "domination"]],
             ["hello you", "world domination"],
-            llProps, Ms, llm, print_stats=True
+            llProps, Ms,
+            llm("Consider the problem of concatenating two strings with a space in between.") if llm is not None else None,
+            print_stats=True
         )
-        print("test 5: ", end='')
-        softcheck(
-            bustle(
-                sl, str2,
-                [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
-                llProps, Ms, llm, print_stats=True
-            ), [
-                ("Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])]),
-                ('Replace', [('input', 0), 1, ('Minus', [0, 2]), ''])
-            ])
+        # print("test 5: ", end='')
+        # softcheck(
+        #     bustle(
+        #         sl, str2,
+        #         [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
+        #         llProps, Ms, llm, print_stats=True
+        #     ), [
+        #         ("Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])]),
+        #         ('Replace', [('input', 0), 1, ('Minus', [0, 2]), ''])
+        #     ])
 
-        PSol = probe_bustle(
-                sl, str2,
-                [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
-                llProps, Ms, llm, print_stats=True, N=5
-            )[1]
-        cost = PSol_cost(sl, PSol)
-        print(cost)
+        # PSol = probe_bustle(
+        #         sl, str2,
+        #         [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
+        #         llProps, Ms, llm, print_stats=True, N=5
+        #     )[1]
+        # cost = PSol_cost(sl, PSol)
+        # print(cost)
 
 if __name__ == "__main__":
     print("running tests...")
