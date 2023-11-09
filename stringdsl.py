@@ -306,7 +306,7 @@ def test():
             print_stats=True
         )
         if llProps is not None:
-            break
+            continue
         print("test 5: ", end='')
         softcheck(
             bustle(
