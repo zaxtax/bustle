@@ -305,24 +305,30 @@ def test():
             llm("Consider the problem of concatenating two strings with a space in between.") if llm is not None else None,
             print_stats=True
         )
-        # print("test 5: ", end='')
-        # softcheck(
-        #     bustle(
-        #         sl, str2,
-        #         [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
-        #         llProps, Ms, llm, print_stats=True
-        #     ), [
-        #         ("Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])]),
-        #         ('Replace', [('input', 0), 1, ('Minus', [0, 2]), ''])
-        #     ])
+        if llProps is not None:
+            break
+        print("test 5: ", end='')
+        softcheck(
+            bustle(
+                sl, str2,
+                [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
+                llProps, Ms,
+                llm("Consider the problem of concatenating the first character and the last character of a string.") if llm is not None else None,
+                print_stats=True
+            ), [
+                ("Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])]),
+                ('Replace', [('input', 0), 1, ('Minus', [0, 2]), ''])
+            ])
 
-        # PSol = probe_bustle(
-        #         sl, str2,
-        #         [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
-        #         llProps, Ms, llm, print_stats=True, N=5
-        #     )[1]
-        # cost = PSol_cost(sl, PSol)
-        # print(cost)
+        PSol = probe_bustle(
+                sl, str2,
+                [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
+                llProps, Ms,
+                llm("Consider the problem of concatenating the first character and the last character of a string.") if llm is not None else None,
+                print_stats=True, N=5
+            )[1]
+        cost = PSol_cost(sl, PSol)
+        print(cost)
 
 if __name__ == "__main__":
     print("running tests...")
