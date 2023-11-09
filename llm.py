@@ -1,7 +1,7 @@
 from dslparser import printer
 from llm_outlines import gen
 
-debug = True
+debug = False
 choices = ["A", "B", "C", "D", "E"]
 choice_stats = {c:0 for c in choices}
 
@@ -50,5 +50,6 @@ def test():
 
 if __name__ == "__main__":
     print("running tests...")
+    debug = True
     test()
     print("done")
