@@ -19,12 +19,12 @@ def grading_instructions():
 
 def generateOpWeightTable(desc, dsl, It, Ot, I, O):
     table = {}
-    prompt = dsl.desc()
+    prompt = dsl.desc(sayOps=True)
     prompt += "\n"
     n = len(O)
     prompt += desc
     prompt += "\n"
-    prompt += f"You have to generate this function with input/output as follows on {n} examples:\n"
+    prompt += f"You have to generate this function `f` with input/output as follows on {n} examples:\n"
     prompt += dsl.io_print(I, O)
     preambule = prompt
     for op in dsl.Ops:
@@ -61,7 +61,7 @@ def generateDeltaWeight(desc):
         n = len(O)
         prompt += desc
         prompt += "\n"
-        prompt += f"You have to generate this function with input/output as follows on {n} examples:\n"
+        prompt += f"You have to generate this function `f` with input/output as follows on {n} examples:\n"
         prompt += dsl.io_print(I, O)
         expr = printer(dsl, V[0])
         res = V[1]

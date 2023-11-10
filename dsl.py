@@ -66,7 +66,7 @@ class Dsl:
         t, _ = self.types(op)
         return t
 
-    def desc(self):
+    def desc(self, sayOps=False):
         prompt = ""
         ops = ",".join([f"`{op}`" for op in self.Ops])
         (V0, I, O) = self.Ex
@@ -76,6 +76,8 @@ class Dsl:
         prompt += f"As an example, consider a function with the following input/output on {n} examples:\n"
         prompt += self.io_print(I, O)
         prompt += f"A possible solution expression is {expr}.\n"
+        if sayOps:
+            prompt += f"So the operations in that expression should be graded as very likely to occur: {self.all_ops(V0)}.\n"
         return prompt
 
     def io_print(self, I, O):
