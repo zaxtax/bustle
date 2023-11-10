@@ -78,10 +78,11 @@ def generateDeltaWeight(desc):
         return choices.index(r)
     return inner
 
-def bustle_llm(desc, gen, dsl, typeSig, I, O):
+def bustle_llm(desc, gen, dsl, typeSig, I, O, llProps=None, Ms=None, **kwargs):
     from bustle import bustle
     Ot, It = typeSig
-    return bustle(dsl, typeSig, I, O, llm=gen(desc, dsl, It, Ot, I, O))
+    llm = gen(desc, dsl, It, Ot, I, O) if gen is not None else None
+    return bustle(dsl, typeSig, I, O, llProps, Ms, llm=llm, **kwargs)
 
 def test():
     from arithdsl import ArithDsl

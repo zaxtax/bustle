@@ -250,7 +250,7 @@ def test():
     from stringprops import llProps
     from model import Rater, loadModel
     import torch
-    from llm import generateDeltaWeight
+    from llm import bustle_llm, generateDeltaWeightAll, generateOpWeightTable
 
     str2 = ("str", ("str",))
     str3 = ("str", ("str", "str"))
@@ -264,9 +264,10 @@ def test():
     }
     MsTrained = loadModel()
 
-    for (desc, sl, llProps, Ms, llm) in [
+    for (desc, sl, llProps, Ms, llm_gen) in [
             ('no ML', sl, None, None, None),
-            ('LLM', sl, None, None, generateDeltaWeight),
+            ('LLM (per problem)', sl, None, None, generateOpWeightTable),
+            ('LLM', sl, None, None, generateDeltaWeightAll),
             ('init ML', sl, llProps, MsInit, None),
             ('trained ML', sl, llProps, MsTrained, None),
             ('trained ML, extended DSL', slx, llProps, MsTrained, None)
@@ -274,61 +275,66 @@ def test():
         print(desc)
 
         print("test 1: ", end='')
-        assert ("Left", [("input", 0), 1]) == bustle(
+        assert ("Left", [("input", 0), 1]) == bustle_llm(
+            "Consider the problem of taking the first character of a string.",
+            llm_gen,
             sl, str2, [["hello", "world"]], ["h", "w"], llProps, Ms,
-            llm("Consider the problem of taking the first character of a string.") if llm is not None else None,
             print_stats=True
         )
         print("test 2: ", end='')
-        assert ("Right", [("input", 0), 1]) == bustle(
+        assert ("Right", [("input", 0), 1]) == bustle_llm(
+            "Consider the probelm of taking the last character of a string.",
+            llm_gen,
             sl, str2, [["hello", "world"]], ["o", "d"], llProps, Ms,
-            llm("Consider the probelm of taking the last character of a string.") if llm is not None else None,
             print_stats=True
         )
         print("test 3: ", end='')
-        assert ("Concatenate", [("input", 0), ("input", 1)]) == bustle(
+        assert ("Concatenate", [("input", 0), ("input", 1)]) == bustle_llm(
+            "Consider the problem of concatenating two strings.",
+            llm_gen,
             sl, str3,
             [["hello", "world"], ["you", "domination"]],
             ["helloyou", "worlddomination"],
             llProps, Ms,
-            llm("Consider the problem of concatenating two strings.") if llm is not None else None,
             print_stats=True
         )
         print("test 4: ", end='')
         assert (
             "Concatenate", [("input", 0), ("Concatenate", [" ", ("input", 1)])],
-        ) == bustle(
+        ) == bustle_llm(
+            "Consider the problem of concatenating two strings with a space in between.",
+            llm_gen,
             sl, str3,
             [["hello", "world"], ["you", "domination"]],
             ["hello you", "world domination"],
             llProps, Ms,
-            llm("Consider the problem of concatenating two strings with a space in between.") if llm is not None else None,
             print_stats=True
         )
         if llProps is not None:
             continue
         print("test 5: ", end='')
         softcheck(
-            bustle(
+            bustle_llm(
+                "Consider the problem of concatenating the first character and the last character of a string.",
+                llm_gen,
                 sl, str2,
                 [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
                 llProps, Ms,
-                llm("Consider the problem of concatenating the first character and the last character of a string.") if llm is not None else None,
                 print_stats=True
             ), [
                 ("Concatenate", [("Left", [("input", 0), 1]), ("Right", [("input", 0), 1])]),
                 ('Replace', [('input', 0), 1, ('Minus', [0, 2]), ''])
             ])
 
-        PSol = probe_bustle(
-                sl, str2,
-                [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
-                llProps, Ms,
-                llm("Consider the problem of concatenating the first character and the last character of a string.") if llm is not None else None,
-                print_stats=True, N=5
-            )[1]
-        cost = PSol_cost(sl, PSol)
-        print(cost)
+        # PSol = probe_bustle(
+        #         sl, str2,
+        #         [["hello", "world", "domination", "yes"]], ["ho", "wd", "dn", "ys"],
+        #         llProps, Ms,
+        #         llm("Consider the problem of concatenating the first character and the last character of a string.") if llm is not None else None,
+        #         print_stats=True, N=5
+        #     )[1]
+        # cost = PSol_cost(sl, PSol)
+        # print(cost)
 
 if __name__ == "__main__":
     print("running tests...")
